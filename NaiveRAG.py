@@ -18,13 +18,15 @@ import tempfile
 load_dotenv()
 groq_api_key = st.secrets['GROQ_API_KEY']
 openai_api_key = st.secrets['OPENAI_API_KEY']
+os.environ["LANGCHAIN_API_KEY"] = st.secrets["LANGCHAIN_API_KEY"]
+os.environ["LANGCHAIN_TRACING_V2"] = "true"
 
 
 # Initialize LLM
 llm = ChatGroq(model="llama-3.3-70b-versatile", api_key=groq_api_key)
 
 # Streamlit app title
-st.title("Document Chatbot")
+st.title("📚 NaiveRAG: Intelligent Document Chatbot 🤖")
 
 # Initialize session state for conversation history
 if "conversation" not in st.session_state:
@@ -82,7 +84,7 @@ if pdf_file or web_url or csv_file:
     st.session_state.retriever = vector_store.as_retriever()
 
 # Chat input
-query = st.chat_input("Ask a question about the document:")
+query = st.chat_input("🤔 Ask a question about the document:")
 
 # Display conversation history
 for message in st.session_state.conversation:
