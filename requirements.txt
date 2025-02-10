@@ -1,2 +1,8 @@
 streamlit
 langchain
+langchain-groq
+langchain-community
+bs4
+langchain-openai
+faiss-cpu
+

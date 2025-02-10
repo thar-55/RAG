@@ -2,9 +2,19 @@
 
 Retrieval Augmented Generation (RAG) has evolved into various types, each designed to address specific challenges and improve the accuracy and efficiency of AI-generated responses. Here are some of the most notable types of RAG:
 
-## Standard RAG
+## Standard RAG/Naive RAG
 
 This is the basic form of RAG, where the model retrieves relevant documents from a database in response to a query and generates an output based on the retrieved information[2]. It's suitable for simple applications like FAQ systems or customer support bots where the scope of information is limited to a known set of documents[2].
+
+This is the foundational RAG approach, involving a straightforward process:
+
+- **Indexing**: Data is extracted, cleaned, and divided into manageable chunks, which are then transformed into vectors using embedding models.
+- **Retrieval**: Upon receiving a user query, the system encodes it into a vector and performs a similarity search to find the most relevant data chunks.
+- **Generation**: The retrieved chunks are combined with the user query to form a prompt, which is fed to the LLM to generate a response[1].
+
+While simple, Naive RAG can suffer from limitations such as low precision in retrieval and potential inaccuracies if relevant chunks are not properly retrieved.
+
+![alt text](Images/image.png)
 
 ## Contextual RAG
 
@@ -59,17 +69,6 @@ Citations:
 [12] https://blogs.nvidia.com/blog/what-is-retrieval-augmented-generation/
 
 
-Retrieval-Augmented Generation (RAG) has indeed evolved into various architectures to address specific challenges and optimize performance. Here's an overview of some notable RAG types:
-
-## Naive RAG
-
-This is the foundational RAG approach, involving a straightforward process:
-
-- **Indexing**: Data is extracted, cleaned, and divided into manageable chunks, which are then transformed into vectors using embedding models.
-- **Retrieval**: Upon receiving a user query, the system encodes it into a vector and performs a similarity search to find the most relevant data chunks.
-- **Generation**: The retrieved chunks are combined with the user query to form a prompt, which is fed to the LLM to generate a response[1].
-
-While simple, Naive RAG can suffer from limitations such as low precision in retrieval and potential inaccuracies if relevant chunks are not properly retrieved.
 
 ## Advanced RAG
 
