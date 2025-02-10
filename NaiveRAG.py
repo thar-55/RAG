@@ -37,11 +37,11 @@ pdf_file = st.sidebar.file_uploader("Choose a PDF file", type="pdf")
 web_url = st.sidebar.text_input("Enter a URL to load data from:")
 csv_file = st.sidebar.file_uploader("Choose a CSV file", type="csv")
 
-
+pages = []
 
 # Load documents and create vector store
 if pdf_file or web_url or csv_file:
-    pages = []
+    
     
     # Load PDF file
     if pdf_file:
