@@ -5,5 +5,5 @@ langchain-community
 bs4
 langchain-openai
 faiss-cpu
-pymupdf
+pypdf
 
