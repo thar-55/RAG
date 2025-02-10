@@ -14,8 +14,7 @@ from langchain_groq import ChatGroq
 from langchain_community.vectorstores import FAISS
 import tempfile
 
-# Load environment variables
-load_dotenv()
+
 groq_api_key = st.secrets['GROQ_API_KEY']
 openai_api_key = st.secrets['OPENAI_API_KEY']
 os.environ["LANGCHAIN_API_KEY"] = st.secrets["LANGCHAIN_API_KEY"]
