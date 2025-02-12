@@ -5,6 +5,7 @@ from langchain_community.document_loaders import (
     PyPDFLoader,
     WebBaseLoader,
     CSVLoader,
+    YoutubeLoader,
     
 )
 
@@ -35,12 +36,13 @@ if "conversation" not in st.session_state:
 pdf_file = st.sidebar.file_uploader("Choose a PDF file", type="pdf")
 web_url = st.sidebar.text_input("Enter a URL to load data from:")
 csv_file = st.sidebar.file_uploader("Choose a CSV file", type="csv")
+youtube_url = st.sidebar.text_input("Enter a YouTube URL to load data from:")
 
 pages = []
 
 # Load documents and create vector store
 if pdf_file or web_url or csv_file:
-    
+    pages = []
     
     # Load PDF file
     if pdf_file:
@@ -61,6 +63,14 @@ if pdf_file or web_url or csv_file:
             pages.extend(loader.load())
         except Exception as e:
             st.error(f"Error loading URL: {e}")
+
+    # Load YouTube URL
+    if youtube_url:
+        try:
+            loader = YoutubeLoader.from_youtube_url(youtube_url, add_video_info=True)
+            pages.extend(loader.load())
+        except Exception as e:
+            st.error(f"Error loading YouTube: {e}")
 
     # Load CSV file
     if csv_file:
