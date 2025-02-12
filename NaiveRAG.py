@@ -108,7 +108,8 @@ if query:
 
     # Define prompt template
     prompt = ChatPromptTemplate.from_messages([
-        ("system", "You are an AI assistant. Use the following context to answer questions.")
+        ("system", "You are an AI assistant. Use the following context to answer questions."),
+        ("user", "{query}\n\nContext:\n{context}")
     ])
 
     # Generate response
