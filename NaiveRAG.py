@@ -108,8 +108,7 @@ if query:
 
     # Define prompt template
     prompt = ChatPromptTemplate.from_messages([
-        ("system", "You are an AI assistant. Use the following context to answer questions.If context is not provided Display like I'm RAG AI and don't answer those questions. You should upload any pdf or csv docs or web url. I can assist you if you provide docs or url"),
-        ("user", "{query}\n\nContext:\n{context}")
+        ("system", "You are an AI assistant. Use the following context to answer questions.You don't respond to any questions which are not in pdf docs or web_url or csv doc. Please answer with I can't answer
     ])
 
     # Generate response
