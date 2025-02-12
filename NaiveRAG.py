@@ -41,7 +41,7 @@ youtube_url = st.sidebar.text_input("Enter a YouTube URL to load data from:")
 pages = []
 
 # Load documents and create vector store
-if pdf_file or web_url or csv_file:
+if pdf_file or web_url or csv_file or youtube_url:
     pages = []
     
     # Load PDF file
