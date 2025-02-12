@@ -108,7 +108,7 @@ if query:
 
     # Define prompt template
     prompt = ChatPromptTemplate.from_messages([
-        ("system", "You are an AI assistant. Use the following context to answer questions.You don't respond to any questions which are not in pdf docs or web_url or csv doc. Please answer with I can't answer
+        ("system", "You are an AI assistant. Use the following context to answer questions.You don't respond to any questions which are not in pdf docs or web_url or csv doc. Please answer with I can't answer"
     ])
 
     # Generate response
