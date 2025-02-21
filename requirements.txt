@@ -8,4 +8,7 @@ faiss-cpu
 pypdf
 youtube_transcript_api	
 pytube
+openai
+fal-client
+pytesseract
 

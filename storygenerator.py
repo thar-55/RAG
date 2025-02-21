@@ -30,7 +30,7 @@ def generate_image(prompt: str):
 def generate_story_outline(topic: str, num_paragraphs: int):
     """Generate a story outline with multiple paragraph prompts"""
     try:
-        prompt = f"""Create {num_paragraphs} different scene descriptions for a story about {topic} set in Andhra Pradesh, India. 
+        prompt = f"""Create {num_paragraphs} different scene descriptions for a story about {topic}. 
         Each scene should be unique and flow together to tell a coherent story.
         Format: Return only the numbered list of scene descriptions, one per line."""
         
@@ -49,7 +49,7 @@ def generate_paragraph(image_url: str, scene_description: str, paragraph_number:
     """Generate a single paragraph using Llama model with the image URL"""
     try:
         prompt = f"""Look at this image: {image_url}. 
-        Write a detailed paragraph for part {paragraph_number} of the story based on this scene: {scene_description} in Telugu.
+        Write a detailed paragraph for part {paragraph_number} of the story based on this scene: {scene_description}.
         Make sure it flows well with the overall narrative."""
         
         response = client.chat.completions.create(
@@ -62,63 +62,19 @@ def generate_paragraph(image_url: str, scene_description: str, paragraph_number:
         return None
 
 # Main app
-st.title("🌟Story Generator in Telugu")
-st.write("Generate a story with multiple scenes and images set in Andhra Pradesh!")
-
-# Sidebar for sample examples
-st.sidebar.header("Sample Examples")
-st.sidebar.write("Here are some example topics you can use:")
-
-# List of sample topics
-sample_topics = [
-    "A magical adventure in a forest",
-    "A journey through space",
-    "A detective story in a bustling city",
-    "A historical tale set in ancient India",
-    "A fantasy world with mythical creatures",
-    "An underwater exploration of a lost city",
-    "A time travel adventure to the Renaissance",
-    "A quest to find a hidden treasure",
-    "A superhero saving the day in a small town",
-    "A love story set in a bustling marketplace",
-    "A thrilling escape from a haunted mansion",
-    "A journey through a mystical desert",
-    "A battle between good and evil in a fantasy realm",
-    "A coming-of-age story in a small village",
-    "A culinary adventure around the world",
-    "A race against time to save the planet",
-    "A magical school for young wizards",
-    "An epic quest to find a lost artifact",
-    "A rivalry between two kingdoms",
-    "A mysterious disappearance in a small town",
-    "A journey through the vibrant streets of Hyderabad",
-    "A tale of friendship in a small village",
-    "An adventure in the hills of Araku Valley",
-    "A story of love blossoming during a festival",
-    "A quest to uncover ancient secrets in Amaravati",
-    "A thrilling chase through the markets of Visakhapatnam",
-    "A magical encounter with a sage in Tirupati",
-    "A journey to the historic ruins of Hampi",
-]
-
-# Create buttons for each sample topic
-for topic in sample_topics:
-    if st.sidebar.button(topic):
-        st.session_state.topic = topic  # Store the selected topic in session state
+st.title("🎨 Multi-Scene Story Generator")
+st.write("Generate a story with multiple scenes and images!")
 
 # Get user input
-topic = st.text_input("What's your story about?", placeholder="e.g., A magical adventure in a forest", value=st.session_state.get('topic', ''))
-# Remove language selection and set to Telugu
-language = "Telugu"  # Set language to Telugu directly
-# Remove the slider and set a fixed number of paragraphs
-num_paragraphs = 5  # Fixed to 5 paragraphs
+topic = st.text_input("What's your story about?", placeholder="e.g., A magical adventure in a forest")
+num_paragraphs = st.slider("Number of paragraphs", min_value=2, max_value=5, value=3)
 
 # Generate button
 if st.button("Generate Story", type="primary"):
     if topic:
         with st.spinner("Creating your story..."):
             # Generate story outline first
-            scene_descriptions = generate_story_outline(topic, num_paragraphs)  # No language parameter
+            scene_descriptions = generate_story_outline(topic, num_paragraphs)
             
             if scene_descriptions:
                 # Create story container
@@ -129,16 +85,17 @@ if st.button("Generate Story", type="primary"):
                     
                     # Generate each scene with image and paragraph
                     for i, scene in enumerate(scene_descriptions, 1):
+                        st.write(f"### Scene {i}")
                         
-                        # Generate image for this scene using the scene description
-                        image, image_url = generate_image(f"A scene depicting: {scene} in Andhra Pradesh")  # Updated prompt
+                        # Generate image for this scene
+                        image, image_url = generate_image(f"A scene about {scene}")
                         
                         if image and image_url:
                             # Display image
                             st.image(image, caption=f"Scene {i}")
                             
                             # Generate and display paragraph
-                            paragraph = generate_paragraph(image_url, scene, i)  # No language parameter
+                            paragraph = generate_paragraph(image_url, scene, i)
                             if paragraph:
                                 st.write(paragraph)
                             
@@ -147,3 +104,14 @@ if st.button("Generate Story", type="primary"):
     else:
         st.warning("Please enter a topic first!")
 
+# Add some helpful information at the bottom
+st.sidebar.markdown("""
+### How it works
+1. Enter your story topic
+2. Choose the number of paragraphs
+3. Click Generate
+4. Each paragraph will have:
+   - A unique scene description
+   - A generated image
+   - A paragraph of story text
+""")
