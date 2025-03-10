@@ -12,19 +12,21 @@ from langchain_community.document_loaders import (
 from langchain_openai import OpenAIEmbeddings
 from langchain_core.prompts import ChatPromptTemplate
 from langchain_groq import ChatGroq
+from langchain_openai import ChatOpenAI
 from langchain_community.vectorstores import FAISS
 import tempfile
+st.write(st.secrets)
 
 
-groq_api_key = st.secrets['GROQ_API_KEY']
+# groq_api_key = st.secrets['GROQ_API_KEY']
 openai_api_key = st.secrets['OPENAI_API_KEY']
-os.environ["LANGCHAIN_API_KEY"] = st.secrets["LANGCHAIN_API_KEY"]
-os.environ["LANGCHAIN_TRACING_V2"] = "true"
+# os.environ["LANGCHAIN_API_KEY"] = st.secrets["LANGCHAIN_API_KEY"]
+# os.environ["LANGCHAIN_TRACING_V2"] = "true"
 
 
 # Initialize LLM
-llm = ChatGroq(model="llama-3.3-70b-versatile", api_key=groq_api_key)
-
+# llm = ChatGroq(model="llama-3.3-70b-versatile", api_key=groq_api_key)
+llm = ChatOpenAI(model="gpt-4o",api_key=openai_api_key) 
 # Streamlit app title
 st.title("📚 NaiveRAG: Intelligent Document Chatbot 🤖")
 
