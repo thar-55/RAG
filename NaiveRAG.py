@@ -15,7 +15,7 @@ from langchain_groq import ChatGroq
 from langchain_openai import ChatOpenAI
 from langchain_community.vectorstores import FAISS
 import tempfile
-st.write(st.secrets)
+# st.write(st.secrets)
 
 
 # groq_api_key = st.secrets['GROQ_API_KEY']
