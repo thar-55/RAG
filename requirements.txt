@@ -12,4 +12,5 @@ pytube
 openai
 fal-client
 pytesseract
+tabulate
 
