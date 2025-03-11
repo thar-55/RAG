@@ -1,4 +1,4 @@
-from langchain_experimental.agents import AgentType
+# from langchain_experimental.agents import AgentType
 from langchain.agents import create_pandas_dataframe_agent
 # from langchain_experimental.agents import create_pandas_dataframe_agent
 
@@ -81,7 +81,7 @@ if prompt := st.chat_input(placeholder="What is this data about?"):
         llm,
         df,
         verbose=True,
-        agent_type=AgentType.OPENAI_FUNCTIONS,
+        agent_type="tool-calling",
         handle_parsing_errors=True,
     )
 
