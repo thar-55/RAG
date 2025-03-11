@@ -1,6 +1,6 @@
 import streamlit as st
 import os
-
+import faiss
 from langchain_community.document_loaders import (
     PyPDFLoader,
     WebBaseLoader,
@@ -16,6 +16,7 @@ from langchain_openai import ChatOpenAI
 from langchain_community.vectorstores import FAISS
 import tempfile
 # st.write(st.secrets)
+import pandas as pd
 
 
 # groq_api_key = st.secrets['GROQ_API_KEY']
@@ -74,8 +75,17 @@ if pdf_file or web_url or csv_file :
             tmp_file.write(csv_file.getbuffer())
             tmp_file_path = tmp_file.name
 
+        df = pd.read_csv(tmp_file_path)
+    
+        # Take 10% of the records from the DataFrame
+        df_sample = df.sample(frac=0.1, random_state=1)  # 10% sample
+
+        with tempfile.NamedTemporaryFile(delete=False, suffix=".csv") as tmp_sample_file:
+            tmp_sample_file_path = tmp_sample_file.name
+            df_sample.to_csv(tmp_sample_file_path, index=False)
+
         try:
-            loader = CSVLoader(tmp_file_path)
+            loader = CSVLoader(tmp_sample_file_path)
             pages.extend(loader.load())
         finally:
             os.unlink(tmp_file_path)
