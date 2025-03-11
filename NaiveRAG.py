@@ -85,6 +85,18 @@ if pdf_file or web_url or csv_file :
     embeddings = OpenAIEmbeddings(api_key=openai_api_key)
     vector_store = FAISS.from_documents(pages, embeddings)
 
+    index_file_path = "/tmp/faiss_index.index"
+    faiss.write_index(vector_store.index, index_file_path)
+
+    # Allow users to download the FAISS index file
+    with open(index_file_path, "rb") as f:
+        st.download_button(
+            label="Download FAISS Index",
+            data=f,
+            file_name="faiss_index.index",
+            mime="application/octet-stream"
+        )
+
     # Store the retriever in session state
     st.session_state.retriever = vector_store.as_retriever()
 
