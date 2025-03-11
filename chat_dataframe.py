@@ -80,9 +80,9 @@ if prompt := st.chat_input(placeholder="What is this data about?"):
     pandas_df_agent = create_pandas_dataframe_agent(
         llm,
         df,
-        verbose=True,
+        # verbose=True,
         agent_type="tool-calling",
-        handle_parsing_errors=True,
+        # handle_parsing_errors=True,
     )
 
     with st.chat_message("assistant"):
