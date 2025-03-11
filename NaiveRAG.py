@@ -114,7 +114,7 @@ if query:
 
     # Define prompt template
     prompt = ChatPromptTemplate.from_messages([
-        ("system", "You are an AI assistant. Use the following context to answer questions."),
+        ("system", "You are an AI sales manager. the user will input reff_id Use the following context to return the Names of the customers who bought it."),
         ("user", "{query}\n\nContext:\n{context}")
     ])
 
