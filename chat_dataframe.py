@@ -147,7 +147,7 @@ if prompt := st.chat_input(placeholder="What is this data about?"):
         }           )
         prompt_text = prompt_template.format(input_ref=st.session_state.messages)
         # response =pandas_df_agent.invoke
-        response = pandas_df_agent.run(prompt_texts, callbacks=[st_cb])
+        response = pandas_df_agent.run(prompt_text, callbacks=[st_cb])
         print(response)
         st.session_state.messages.append({"role": "assistant", "content": response})
         st.write(response)
