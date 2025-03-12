@@ -188,6 +188,6 @@ if prompt := st.chat_input(placeholder="What is this data about?"):
         response = pandas_df_agent.run(prompt_text, callbacks=[st_cb])
         print(response)
         formatted_output = output_parser.parse(response)
-        st.session_state["customers"] = formatted_output.customer_list
+        st.session_state["customers"] = formatted_output['customer_list']
         st.session_state.messages.append({"role": "assistant", "content": response})
         st.write(response)
