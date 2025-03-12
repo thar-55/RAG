@@ -133,11 +133,11 @@ if not uploaded_file:
 if uploaded_file:
     df = load_data(uploaded_file)
 
-if "customers" in st.session_state and st.session_state["customers"]:
-    if st.button("Generate PDF"):
-        pdf_file = generate_pdf(st.session_state["customers"])
-        with open(pdf_file, "rb") as f:
-            st.download_button("Download PDF", f, file_name="customer_report.pdf", mime="application/pdf")
+# if "customers" in st.session_state and st.session_state["customers"]:
+#     if st.button("Generate PDF"):
+#         pdf_file = generate_pdf(st.session_state["customers"])
+#         with open(pdf_file, "rb") as f:
+#             st.download_button("Download PDF", f, file_name="customer_report.pdf", mime="application/pdf")
 
 # openai_api_key = st.sidebar.text_input("OpenAI API Key", type="password")
 if "messages" not in st.session_state or st.sidebar.button("Clear conversation history"):
@@ -191,3 +191,6 @@ if prompt := st.chat_input(placeholder="What is this data about?"):
         st.session_state["customers"] = formatted_output['customer_list']
         st.session_state.messages.append({"role": "assistant", "content": response})
         st.write(response)
+        pdf_file = generate_pdf(formatted_output['customer_list'])
+        with open(pdf_file, "rb") as f:
+            st.download_button("Download PDF", f, file_name="customer_report.pdf", mime="application/pdf")
