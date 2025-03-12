@@ -14,3 +14,4 @@ fal-client
 pytesseract
 tabulate
 pydantic
+reportlab
