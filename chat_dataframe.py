@@ -196,5 +196,4 @@ if prompt := st.chat_input(placeholder="Enter the reference number "):
                 st.download_button("Download PDF", f, file_name="customer_report.pdf", mime="application/pdf")
         except json.JSONDecodeError:
             st.error("Failed to parse response. Try again.")
-            return []
         
