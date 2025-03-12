@@ -12,7 +12,7 @@ import os
 from langchain_core.prompts import PromptTemplate
 from pydantic import BaseModel
 from langchain_core.output_parsers import JsonOutputParser
-
+from typing import List
 class Report_Structure(BaseModel):
     customer_list: List[str]
 
