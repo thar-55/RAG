@@ -9,6 +9,36 @@ from langchain_openai import ChatOpenAI
 import streamlit as st
 import pandas as pd
 import os
+from langchain_core.prompts import PromptTemplate
+
+
+
+def generate_prompt():
+    prompt = (
+        """ Generate {questions_number} multiple choice questions for the subject {subject} with difficulty level {difficulty}.
+
+        The questions should cover the following topics and sub-topics:
+        {topics_str}
+        
+        
+        For each question, provide:
+        1. The question text.
+        2. A list of multiple choice options.
+        3. The index of the correct answer.
+        4. A short explanation of why the correct answer is correct and why distractor choice is wroung.
+        5. A list of related topics and subtopics relevant to the question.
+
+        {format_instructions}
+        questions_list":list of each question (question,choices,answer,explanation,related_topics)
+        answers:  list of correct answers index in each question
+        
+         """
+    )
+
+
+
+
+
 
 openai_api_key = st.secrets['OPENAI_API_KEY']
 file_formats = {
@@ -68,6 +98,8 @@ for msg in st.session_state.messages:
     st.chat_message(msg["role"]).write(msg["content"])
 
 if prompt := st.chat_input(placeholder="What is this data about?"):
+    
+
     st.session_state.messages.append({"role": "user", "content": prompt})
     st.chat_message("user").write(prompt)
 
@@ -90,6 +122,14 @@ if prompt := st.chat_input(placeholder="What is this data about?"):
 
     with st.chat_message("assistant"):
         st_cb = StreamlitCallbackHandler(st.container(), expand_new_thoughts=False)
-        response = pandas_df_agent.run(st.session_state.messages, callbacks=[st_cb])
+        prompt_template = PromptTemplate.from_template("""search in purchases history for the ref_id = {input_ref} , then return  a list of customer names thar purchased this item 
+           {format_instructions}
+        customer_list":list of customers (name)
+        
+        """)
+        prompt_text = prompt_template.format(input_ref=st.session_state.messages)
+        # response =pandas_df_agent.invoke
+        response = pandas_df_agent.run(prompt_texts, callbacks=[st_cb])
+        print(response)
         st.session_state.messages.append({"role": "assistant", "content": response})
         st.write(response)
