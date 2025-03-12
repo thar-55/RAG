@@ -16,7 +16,7 @@ from typing import List
 from reportlab.lib.pagesizes import A4
 from reportlab.pdfgen import canvas
 
-
+df = pd.read_csv('cleand_dataset.csv')
 
 class Report_Structure(BaseModel):
     customer_list: List[str]
@@ -55,28 +55,6 @@ def generate_pdf(customers, filename="customer_report.pdf"):
     c.save()
     return file_path
 
-
-def generate_prompt():
-    prompt = (
-        """ Generate {questions_number} multiple choice questions for the subject {subject} with difficulty level {difficulty}.
-
-        The questions should cover the following topics and sub-topics:
-        {topics_str}
-        
-        
-        For each question, provide:
-        1. The question text.
-        2. A list of multiple choice options.
-        3. The index of the correct answer.
-        4. A short explanation of why the correct answer is correct and why distractor choice is wroung.
-        5. A list of related topics and subtopics relevant to the question.
-
-        {format_instructions}
-        questions_list":list of each question (question,choices,answer,explanation,related_topics)
-        answers:  list of correct answers index in each question
-        
-         """
-    )
 
 
 
@@ -118,20 +96,20 @@ def load_data(uploaded_file):
 st.set_page_config(page_title="LangChain: Chat with pandas DataFrame", page_icon="🦜")
 st.title("🦜 LangChain: Chat with pandas DataFrame")
 
-uploaded_file = st.file_uploader(
-    "Upload a Data file",
-    type=list(file_formats.keys()),
-    help="Various File formats are Support",
-    on_change=clear_submit,
-)
+# uploaded_file = st.file_uploader(
+#     "Upload a Data file",
+#     type=list(file_formats.keys()),
+#     help="Various File formats are Support",
+#     on_change=clear_submit,
+# )
 
-if not uploaded_file:
-    st.warning(
-        "This app uses LangChain's `PythonAstREPLTool` which is vulnerable to arbitrary code execution. Please use caution in deploying and sharing this app."
-    )
+# if not uploaded_file:
+#     st.warning(
+#         "This app uses LangChain's `PythonAstREPLTool` which is vulnerable to arbitrary code execution. Please use caution in deploying and sharing this app."
+#     )
 
-if uploaded_file:
-    df = load_data(uploaded_file)
+# if uploaded_file:
+#     df = load_data(uploaded_file)
 
 # if "customers" in st.session_state and st.session_state["customers"]:
 #     if st.button("Generate PDF"):
