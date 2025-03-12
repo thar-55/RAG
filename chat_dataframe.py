@@ -133,7 +133,7 @@ if not uploaded_file:
 if uploaded_file:
     df = load_data(uploaded_file)
 
-f "customers" in st.session_state and st.session_state["customers"]:
+if "customers" in st.session_state and st.session_state["customers"]:
     if st.button("Generate PDF"):
         pdf_file = generate_pdf(st.session_state["customers"])
         with open(pdf_file, "rb") as f:
