@@ -13,6 +13,11 @@ from langchain_core.prompts import PromptTemplate
 from pydantic import BaseModel
 from langchain_core.output_parsers import JsonOutputParser
 from typing import List
+rom reportlab.lib.pagesizes import A4
+from reportlab.pdfgen import canvas
+
+
+
 class Report_Structure(BaseModel):
     customer_list: List[str]
 
@@ -23,6 +28,33 @@ class Report_Structure(BaseModel):
      
 
         }
+
+def generate_pdf(customers, filename="customer_report.pdf"):
+    file_path = os.path.join("temp", filename)
+    os.makedirs("temp", exist_ok=True)
+    
+    c = canvas.Canvas(file_path, pagesize=A4)
+    width, height = A4
+    c.setFont("Helvetica", 12)
+    
+    c.drawString(50, height - 50, "Customer Report")
+    y = height - 80
+    
+    for i, customer in enumerate(customers):
+        c.drawString(50, y, f"{i+1}. Name: {customer}")
+        c.drawString(50, y - 20, f"   Email: zaidalshami8@gmail.com")
+        c.drawString(50, y - 40, f"   Address: my adress")
+        # c.drawString(50, y - 20, f"   Email: {customer.email}")
+        # c.drawString(50, y - 40, f"   Address: {customer.address}")
+        y -= 70
+        if y < 50:  # Add a new page if needed
+            c.showPage()
+            c.setFont("Helvetica", 12)
+            y = height - 50
+    
+    c.save()
+    return file_path
+
 
 def generate_prompt():
     prompt = (
@@ -101,6 +133,12 @@ if not uploaded_file:
 if uploaded_file:
     df = load_data(uploaded_file)
 
+f "customers" in st.session_state and st.session_state["customers"]:
+    if st.button("Generate PDF"):
+        pdf_file = generate_pdf(st.session_state["customers"])
+        with open(pdf_file, "rb") as f:
+            st.download_button("Download PDF", f, file_name="customer_report.pdf", mime="application/pdf")
+
 # openai_api_key = st.sidebar.text_input("OpenAI API Key", type="password")
 if "messages" not in st.session_state or st.sidebar.button("Clear conversation history"):
     st.session_state["messages"] = [{"role": "assistant", "content": "How can I help you?"}]
@@ -149,5 +187,7 @@ if prompt := st.chat_input(placeholder="What is this data about?"):
         # response =pandas_df_agent.invoke
         response = pandas_df_agent.run(prompt_text, callbacks=[st_cb])
         print(response)
+        formatted_output = output_parser.parse(response)
+        st.session_state["customers"] = formatted_output.customer_list
         st.session_state.messages.append({"role": "assistant", "content": response})
         st.write(response)
