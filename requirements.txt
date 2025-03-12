@@ -13,4 +13,4 @@ openai
 fal-client
 pytesseract
 tabulate
-
+pydantic
