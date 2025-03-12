@@ -13,7 +13,7 @@ from langchain_core.prompts import PromptTemplate
 from pydantic import BaseModel
 from langchain_core.output_parsers import JsonOutputParser
 from typing import List
-rom reportlab.lib.pagesizes import A4
+from reportlab.lib.pagesizes import A4
 from reportlab.pdfgen import canvas
 
 
