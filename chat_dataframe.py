@@ -10,8 +10,19 @@ import streamlit as st
 import pandas as pd
 import os
 from langchain_core.prompts import PromptTemplate
+from pydantic import BaseModel
+from langchain_core.output_parsers import JsonOutputParser
+
+class Report_Structure(BaseModel):
+    customer_list: List[str]
 
 
+    def to_dict(self):
+        return {
+            'customer_list': [str(customer) for customer in self.customer_list],
+     
+
+        }
 
 def generate_prompt():
     prompt = (
@@ -122,11 +133,18 @@ if prompt := st.chat_input(placeholder="What is this data about?"):
 
     with st.chat_message("assistant"):
         st_cb = StreamlitCallbackHandler(st.container(), expand_new_thoughts=False)
-        prompt_template = PromptTemplate.from_template("""search in purchases history for the ref_id = {input_ref} , then return  a list of customer names thar purchased this item 
+        output_parser = JsonOutputParser(
+        pydantic_object=Report_Structure
+        )
+        prompt_template = PromptTemplate( template="""search in purchases history for the ref_id = {input_ref} , then return  a list of customer names thar purchased this item 
            {format_instructions}
         customer_list":list of customers (name)
         
-        """)
+        """,
+        input_variables=["input_ref"],
+        partial_variables={
+            "format_instructions": output_parser.get_format_instructions()
+        }           )
         prompt_text = prompt_template.format(input_ref=st.session_state.messages)
         # response =pandas_df_agent.invoke
         response = pandas_df_agent.run(prompt_texts, callbacks=[st_cb])
