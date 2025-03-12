@@ -16,15 +16,31 @@ from typing import List
 from reportlab.lib.pagesizes import A4
 from reportlab.pdfgen import canvas
 
-df = pd.read_csv('cleand_dataset.csv')
+df = pd.read_csv('beta_dataset.csv')
 
-class Report_Structure(BaseModel):
-    customer_list: List[str]
+
+class Customer(BaseModel):
+    name: str
+    email: str
+    phone: str
 
 
     def to_dict(self):
         return {
-            'customer_list': [str(customer) for customer in self.customer_list],
+            'name': self.name,
+            'email': self.email,
+            'phone': self.phone,
+            
+        }
+
+
+class Report_Structure(BaseModel):
+    customer_list: List[Customer]
+
+
+    def to_dict(self):
+        return {
+            'customer_list': [customer.to_dict() for customer in self.customer_list],
      
 
         }
@@ -41,11 +57,9 @@ def generate_pdf(customers, filename="customer_report.pdf"):
     y = height - 80
     
     for i, customer in enumerate(customers):
-        c.drawString(50, y, f"{i+1}. Name: {customer}")
-        c.drawString(50, y - 20, f"   Email: zaidalshami8@gmail.com")
-        c.drawString(50, y - 40, f"   Address: my adress")
-        # c.drawString(50, y - 20, f"   Email: {customer.email}")
-        # c.drawString(50, y - 40, f"   Address: {customer.address}")
+        c.drawString(50, y, f"{i+1}. Name: {customer.name}")
+        c.drawString(50, y - 20, f"   Email: {customer.email}")
+        c.drawString(50, y - 40, f"   Phone: {customer.phone}")
         y -= 70
         if y < 50:  # Add a new page if needed
             c.showPage()
@@ -93,8 +107,8 @@ def load_data(uploaded_file):
         return None
 
 
-st.set_page_config(page_title="LangChain: Chat with pandas DataFrame", page_icon="🦜")
-st.title("🦜 LangChain: Chat with pandas DataFrame")
+st.set_page_config(page_title="Customers report builder", page_icon="🦜")
+st.title("🦜 Generate your report with AI ")
 
 # uploaded_file = st.file_uploader(
 #     "Upload a Data file",
@@ -124,7 +138,7 @@ if "messages" not in st.session_state or st.sidebar.button("Clear conversation h
 for msg in st.session_state.messages:
     st.chat_message(msg["role"]).write(msg["content"])
 
-if prompt := st.chat_input(placeholder="What is this data about?"):
+if prompt := st.chat_input(placeholder="Enter the reference number "):
     
 
     st.session_state.messages.append({"role": "user", "content": prompt})
@@ -152,9 +166,9 @@ if prompt := st.chat_input(placeholder="What is this data about?"):
         output_parser = JsonOutputParser(
         pydantic_object=Report_Structure
         )
-        prompt_template = PromptTemplate( template="""search in purchases history for the ref_id = {input_ref} , then return  a list of customer names thar purchased this item 
+        prompt_template = PromptTemplate( template="""search in purchases history for the ref_id = {input_ref} , then return  a list of customers  (name ,customer_phone ,customer_email)   thay purchased this item 
            {format_instructions}
-        customer_list":list of customers (name)
+        customer_list":list of customers 
         
         """,
         input_variables=["input_ref"],
