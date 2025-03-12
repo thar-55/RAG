@@ -57,9 +57,9 @@ def generate_pdf(customers, filename="customer_report.pdf"):
     y = height - 80
     
     for i, customer in enumerate(customers):
-        c.drawString(50, y, f"{i+1}. Name: {customer.name}")
-        c.drawString(50, y - 20, f"   Email: {customer.email}")
-        c.drawString(50, y - 40, f"   Phone: {customer.phone}")
+        c.drawString(50, y, f"{i+1}. Name: {customer['name']}")
+        c.drawString(50, y - 20, f"   Email: {customer['email']}")
+        c.drawString(50, y - 40, f"   Phone: {customer['phone']}")
         y -= 70
         if y < 50:  # Add a new page if needed
             c.showPage()
@@ -167,6 +167,8 @@ if prompt := st.chat_input(placeholder="Enter the reference number "):
         pydantic_object=Report_Structure
         )
         prompt_template = PromptTemplate( template="""search in purchases history for the ref_id = {input_ref} , then return  a list of customers  (name ,customer_phone ,customer_email)   thay purchased this item 
+          
+           If no relevant data is found, return: {"error": "No data found, please try again."}
            {format_instructions}
         customer_list":list of customers 
         
@@ -179,10 +181,20 @@ if prompt := st.chat_input(placeholder="Enter the reference number "):
         # response =pandas_df_agent.invoke
         response = pandas_df_agent.run(prompt_text, callbacks=[st_cb])
         print(response)
-        formatted_output = output_parser.parse(response)
-        st.session_state["customers"] = formatted_output['customer_list']
-        st.session_state.messages.append({"role": "assistant", "content": response})
-        st.write(response)
-        pdf_file = generate_pdf(formatted_output['customer_list'])
-        with open(pdf_file, "rb") as f:
-            st.download_button("Download PDF", f, file_name="customer_report.pdf", mime="application/pdf")
+
+        try:
+            data = json.loads(response)
+            if "error" in data:
+                st.warning("No data found. Try again with a different request.")
+                return []
+            formatted_output = output_parser.parse(response)
+            st.session_state["customers"] = formatted_output['customer_list']
+            st.session_state.messages.append({"role": "assistant", "content": response})
+            st.write(response)
+            pdf_file = generate_pdf(formatted_output['customer_list'])
+            with open(pdf_file, "rb") as f:
+                st.download_button("Download PDF", f, file_name="customer_report.pdf", mime="application/pdf")
+        except json.JSONDecodeError:
+            st.error("Failed to parse response. Try again.")
+            return []
+        
