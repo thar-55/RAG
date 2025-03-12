@@ -186,14 +186,14 @@ if prompt := st.chat_input(placeholder="Enter the reference number "):
             data = json.loads(response)
             if "error" in data:
                 st.warning("No data found. Try again with a different request.")
-                return []
-            formatted_output = output_parser.parse(response)
-            st.session_state["customers"] = formatted_output['customer_list']
-            st.session_state.messages.append({"role": "assistant", "content": response})
-            st.write(response)
-            pdf_file = generate_pdf(formatted_output['customer_list'])
-            with open(pdf_file, "rb") as f:
-                st.download_button("Download PDF", f, file_name="customer_report.pdf", mime="application/pdf")
+            else:
+                formatted_output = output_parser.parse(response)
+                st.session_state["customers"] = formatted_output['customer_list']
+                st.session_state.messages.append({"role": "assistant", "content": response})
+                st.write(response)
+                pdf_file = generate_pdf(formatted_output['customer_list'])
+                with open(pdf_file, "rb") as f:
+                    st.download_button("Download PDF", f, file_name="customer_report.pdf", mime="application/pdf")
         except json.JSONDecodeError:
             st.error("Failed to parse response. Try again.")
         
