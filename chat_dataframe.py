@@ -193,33 +193,68 @@ if prompt := st.chat_input(placeholder="Enter the reference number "):
         output_parser = JsonOutputParser(
         pydantic_object=Refs_Reports
         )
-        
-        prompt_template = PromptTemplate( template="""user will enter a list of refrences in the input {input_refs} ,
-        the user input will be maybe single string or a list of strings seprated by space or comma
-        for each input go and search column ref_id in the dataframe  and return the records matching 
-        each item in this list will contain:
-        -customers who purchased the item with the ref_id
-        -item title 
-        -ref_id
-        
-        for the customer data please return this data :
-        -name 
-        -customer_phone 
-        -customer_email
-        -date
-        -price 
-        -quantity 
+          prompt_template = PromptTemplate( template="""The user will provide a list of references in the input variable `{input_refs}`. This list could be:
 
-          
-        If no relevant data is found, return: error
-        {format_instructions}
-        reports_list":list of reports of each ref_id that contains the item title and red_id and customers who purchaed it  
-        
-        """,
+            - A single reference string, or
+            - A list of references separated by spaces or commas.
+            
+            For each reference provided, the following steps will be performed:
+            
+            1. Search for each reference (in `ref_id`) in the dataframe.
+            2. Return the matching records for each reference, which will include:
+               - **Customers who purchased the item** with the corresponding `ref_id`.
+               - **Item title**.
+               - **Reference ID** (`ref_id`).
+            
+            For the customer data, please include the following information for each customer:
+            - **Name**
+            - **Phone number** (`customer_phone`)
+            - **Email address** (`customer_email`)
+            - **Purchase date**
+            - **Price paid**
+            - **Quantity purchased**
+            
+            If no relevant data is found for any of the references, return the message: "error".
+            
+            ### Format Instructions:
+            {format_instructions}
+            
+            Finally, compile and return a **reports list**. This list will contain individual reports for each `ref_id`, which includes:
+            - **Item title**
+            - **Reference ID** (`ref_id`)
+            - **Customers who purchased the item**
+                    """,
         input_variables=["input_refs"],
         partial_variables={
             "format_instructions": output_parser.get_format_instructions()
-        }           )
+        }   
+        
+        # prompt_template = PromptTemplate( template="""user will enter a list of refrences in the input {input_refs} ,
+        # the user input will be maybe single string or a list of strings seprated by space or comma
+        # for each input go and search column ref_id in the dataframe  and return the records matching 
+        # each item in this list will contain:
+        # -customers who purchased the item with the ref_id
+        # -item title 
+        # -ref_id
+        
+        # for the customer data please return this data :
+        # -name 
+        # -customer_phone 
+        # -customer_email
+        # -date
+        # -price 
+        # -quantity 
+
+          
+        # If no relevant data is found, return: error
+        # {format_instructions}
+        # reports_list":list of reports of each ref_id that contains the item title and red_id and customers who purchaed it  
+        
+        # """,
+        # input_variables=["input_refs"],
+        # partial_variables={
+        #     "format_instructions": output_parser.get_format_instructions()
+        # }           )
         prompt_text = prompt_template.format(input_refs=st.session_state.messages)
         # response =pandas_df_agent.invoke
         response = pandas_df_agent.run(prompt_text,callbacks=[st_cb])
