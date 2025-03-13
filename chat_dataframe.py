@@ -15,7 +15,7 @@ from langchain_core.output_parsers import JsonOutputParser
 from typing import List
 from reportlab.lib.pagesizes import A4
 from reportlab.pdfgen import canvas
-
+import json
 df = pd.read_csv('beta_dataset.csv')
 
 
