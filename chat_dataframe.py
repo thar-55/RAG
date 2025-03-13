@@ -194,7 +194,8 @@ if prompt := st.chat_input(placeholder="Enter the reference number "):
         pydantic_object=Refs_Reports
         )
         prompt_template = PromptTemplate( template="""user will inter a list of refrences in the input {input_refs} ,
-        for each refrence go and search ref_id and return the records matching 
+        the user input will be maybe single string or a list of strings seprated by space or comma
+        for each input go and search ref_id and return the records matching 
         then generate reports_list:
         each item in this list will contain:
         -customers who purchased the item with the ref_id
@@ -210,8 +211,8 @@ if prompt := st.chat_input(placeholder="Enter the reference number "):
         -quantity 
 
           
-           If no relevant data is found, return: error
-           {format_instructions}
+        If no relevant data is found, return: error
+        {format_instructions}
         reports_list":list of reports of each ref_id that contains the item title and red_id and customers who purchaed it  
         
         """,
