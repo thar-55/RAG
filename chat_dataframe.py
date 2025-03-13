@@ -209,7 +209,7 @@ if prompt := st.chat_input(placeholder="Enter the reference number "):
 
         try:
             
-            for 
+             
             formatted_output = output_parser.parse(response)
             new_list=formatted_output['reports_list']
             for i in new_list:
