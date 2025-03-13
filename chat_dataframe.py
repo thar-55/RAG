@@ -191,7 +191,8 @@ if prompt := st.chat_input(placeholder="Enter the reference number "):
         output_parser = JsonOutputParser(
         pydantic_object=Refs_Reports
         )
-        prompt_template = PromptTemplate( template="""search in purchases history for the ref_id = {input_refs} ,
+        prompt_template = PromptTemplate( template="""user will inter a list of refrences in the input {input_refs} ,
+        for each refrence go and search ref_id and return the records matching 
         then generate reports_list:
         each item in this list will contain:
         -customers who purchased the item with the ref_id
