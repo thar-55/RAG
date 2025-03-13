@@ -226,7 +226,7 @@ if prompt := st.chat_input(placeholder="Enter the reference number "):
 
         try:
             
-             
+             print("phase 0")
             formatted_output = output_parser.parse(response)
             new_list=formatted_output['reports_list']
             print("phase 1")
