@@ -211,7 +211,7 @@ if prompt := st.chat_input(placeholder="Enter the reference number "):
 #    - Price
 #    - Quantity
 
-# If no records are found for a reference ID, return: "Error: No data found for ref_id {ref_id}"
+# If no records are found for a reference ID, return: "Error: No data found for ref_id "
 
 # Please return the results in the following format:
 # - A list of reports for each `ref_id`, including:
