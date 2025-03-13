@@ -184,6 +184,7 @@ if prompt := st.chat_input(placeholder="Enter the reference number "):
         agent_type="tool-calling",
         # handle_parsing_errors=True,
     )
+        # then return  a list of of each ref_id  item title and the list of customers  (name ,customer_phone ,customer_email,date,price , quantity )   thay purchased this item 
 
     with st.chat_message("assistant"):
         st_cb = StreamlitCallbackHandler(st.container(), expand_new_thoughts=False)
@@ -191,7 +192,19 @@ if prompt := st.chat_input(placeholder="Enter the reference number "):
         pydantic_object=Refs_Reports
         )
         prompt_template = PromptTemplate( template="""search in purchases history for the ref_id = {input_refs} ,
-        then return  a list of of each ref_id  item title and the list of customers  (name ,customer_phone ,customer_email,date,price , quantity )   thay purchased this item 
+        then generate reports_list:
+        each item in this list will contain:
+        -customers who purchased the item with the ref_id
+        -item title .
+        
+        for the customer data please return this data :
+        -name 
+        -customer_phone 
+        -customer_email
+        -date
+        -price 
+        -quantity 
+
           
            If no relevant data is found, return: error
            {format_instructions}
@@ -222,5 +235,5 @@ if prompt := st.chat_input(placeholder="Enter the reference number "):
                         st.download_button("Download PDF", f, file_name="customer_report.pdf", mime="application/pdf")
               
         except Exception as e:
-            st.error("No data found.Please Try again.")
+            st.error("No data found.Please Try again."+str(e))
         
