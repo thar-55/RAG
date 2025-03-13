@@ -193,7 +193,7 @@ if prompt := st.chat_input(placeholder="Enter the reference number "):
         output_parser = JsonOutputParser(
         pydantic_object=Refs_Reports
         )
-      prompt_template = PromptTemplate.from_template( """The user will provide a list of references in the input variable `{input_refs}`. This list could be:
+        prompt_template = PromptTemplate.from_template( """The user will provide a list of references in the input variable `{input_refs}`. This list could be:
 
         - A single reference string, or
         - A list of references separated by spaces or commas.
