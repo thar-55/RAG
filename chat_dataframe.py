@@ -168,7 +168,7 @@ if prompt := st.chat_input(placeholder="Enter the reference number "):
         )
         prompt_template = PromptTemplate( template="""search in purchases history for the ref_id = {input_ref} , then return  a list of customers  (name ,customer_phone ,customer_email)   thay purchased this item 
           
-           If no relevant data is found, return: {"error": "No data found, please try again."}
+           If no relevant data is found, return: error}
            {format_instructions}
         customer_list":list of customers 
         
