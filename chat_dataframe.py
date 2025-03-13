@@ -191,6 +191,6 @@ if prompt := st.chat_input(placeholder="Enter the reference number "):
             with open(pdf_file, "rb") as f:
                 st.download_button("Download PDF", f, file_name="customer_report.pdf", mime="application/pdf")
           
-        except Exception as e::
+        except Exception as e:
             st.error("Failed to parse response. Try again.")
         
