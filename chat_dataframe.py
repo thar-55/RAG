@@ -198,7 +198,7 @@ if prompt := st.chat_input(placeholder="Enter the reference number "):
         # The user will provide one or more reference IDs in the input variable `{input_refs}`.
         # The input can be a single reference ID or a list of reference IDs (separated by spaces or commas).
         
-        # For each `ref_id` provided, search for the matching records in the pandas DataFrame.
+        # For each `ref_id` provided, search for the matching records in data you have.
         # If a record is found, return the following details:
         
         # 1. **Item Title**
