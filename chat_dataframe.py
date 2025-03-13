@@ -229,10 +229,13 @@ if prompt := st.chat_input(placeholder="Enter the reference number "):
              
             formatted_output = output_parser.parse(response)
             new_list=formatted_output['reports_list']
+            print("phase 1")
             for i in new_list:
                 st.session_state["customers"] = new_list[i]['customer_list']
+                print("phase 2")
                 st.session_state.messages.append({"role": "assistant", "content": response})
                 st.write(response)
+                print("phase 3")
                 if len(new_list[i]['customer_list'])>0:
                     pdf_file = generate_pdf(new_list[i]['customer_list'])
                     with open(pdf_file, "rb") as f:
