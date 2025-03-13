@@ -16,13 +16,16 @@ from typing import List
 from reportlab.lib.pagesizes import A4
 from reportlab.pdfgen import canvas
 import json
-df = pd.read_csv('beta_dataset.csv')
+df = pd.read_csv('beta_dataset_v2.csv')
 
 
 class Customer(BaseModel):
     name: str
     email: str
     phone: str
+    price: str
+    quantity: str
+    date: str
 
 
     def to_dict(self):
@@ -30,17 +33,38 @@ class Customer(BaseModel):
             'name': self.name,
             'email': self.email,
             'phone': self.phone,
-            
+            'price': self.price,
+            'quantity': self.quantity,
+            'date': self.date,
+
         }
+
+
+
 
 
 class Report_Structure(BaseModel):
     customer_list: List[Customer]
+    item_title :str
 
 
     def to_dict(self):
         return {
             'customer_list': [customer.to_dict() for customer in self.customer_list],
+            'item_title': self.item_title,
+
+     
+
+        }
+
+
+class Refs_Reports(BaseModel):
+    reports_list: List[Report_Structure]
+
+
+    def to_dict(self):
+        return {
+            'reports_list': [report.to_dict() for report in self.reports_list],
      
 
         }
@@ -164,13 +188,14 @@ if prompt := st.chat_input(placeholder="Enter the reference number "):
     with st.chat_message("assistant"):
         st_cb = StreamlitCallbackHandler(st.container(), expand_new_thoughts=False)
         output_parser = JsonOutputParser(
-        pydantic_object=Report_Structure
+        pydantic_object=Refs_Reports
         )
-        prompt_template = PromptTemplate( template="""search in purchases history for the ref_id = {input_ref} , then return  a list of customers  (name ,customer_phone ,customer_email)   thay purchased this item 
+        prompt_template = PromptTemplate( template="""search in purchases history for the ref_id = {input_refs} ,
+        then return  a list of of each ref_id  item title and the list of customers  (name ,customer_phone ,customer_email,date,price , quantity )   thay purchased this item 
           
            If no relevant data is found, return: error
            {format_instructions}
-        customer_list":list of customers 
+        reports_list":list of reports of each ref_id that contains the item title and customers who purchaed it  
         
         """,
         input_variables=["input_ref"],
