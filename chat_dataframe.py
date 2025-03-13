@@ -208,15 +208,19 @@ if prompt := st.chat_input(placeholder="Enter the reference number "):
         print(response)
 
         try:
+            
+            for 
             formatted_output = output_parser.parse(response)
-            st.session_state["customers"] = formatted_output['customer_list']
-            st.session_state.messages.append({"role": "assistant", "content": response})
-            st.write(response)
-            if len(formatted_output['customer_list'])>0:
-                pdf_file = generate_pdf(formatted_output['customer_list'])
-                with open(pdf_file, "rb") as f:
-                    st.download_button("Download PDF", f, file_name="customer_report.pdf", mime="application/pdf")
-          
+            new_list=formatted_output['reports_list']
+            for i in new_list:
+                st.session_state["customers"] = new_list[i]['customer_list']
+                st.session_state.messages.append({"role": "assistant", "content": response})
+                st.write(response)
+                if len(new_list[i]['customer_list'])>0:
+                    pdf_file = generate_pdf(new_list[i]['customer_list'])
+                    with open(pdf_file, "rb") as f:
+                        st.download_button("Download PDF", f, file_name="customer_report.pdf", mime="application/pdf")
+              
         except Exception as e:
             st.error("No data found.Please Try again.")
         
