@@ -200,7 +200,7 @@ if prompt := st.chat_input(placeholder="Enter the reference number "):
         
         For each reference provided, the following steps will be performed:
         
-        1. Search for each reference (in `ref_id`) in the data.
+        1. Search for each reference (in column `ref_id`) in the purchase data.
         2. Return the matching records for each reference, which will include:
            - **Customers who purchased the item** with the corresponding `ref_id`.
            - **Item title**.
