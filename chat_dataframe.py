@@ -263,9 +263,10 @@ if prompt := st.chat_input(placeholder="Enter the reference number "):
 
         try:
             
-            print("phase 0")
+            st.write('phase 0')
             formatted_output = output_parser.parse(response)
             new_list=formatted_output['reports_list']
+            st.write('phase 1')
             print("phase 1")
             for i in new_list:
                 st.session_state["customers"] = new_list[i]['customer_list']
