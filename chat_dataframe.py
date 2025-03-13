@@ -193,6 +193,7 @@ if prompt := st.chat_input(placeholder="Enter the reference number "):
         output_parser = JsonOutputParser(
         pydantic_object=Refs_Reports
         )
+        
         prompt_template = PromptTemplate( template="""user will enter a list of refrences in the input {input_refs} ,
         the user input will be maybe single string or a list of strings seprated by space or comma
         for each input go and search column ref_id in the dataframe  and return the records matching 
@@ -215,7 +216,7 @@ if prompt := st.chat_input(placeholder="Enter the reference number "):
         reports_list":list of reports of each ref_id that contains the item title and red_id and customers who purchaed it  
         
         """,
-        input_variables=["input_ref"],
+        input_variables=["input_refs"],
         partial_variables={
             "format_instructions": output_parser.get_format_instructions()
         }           )
