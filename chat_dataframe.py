@@ -259,7 +259,7 @@ if prompt := st.chat_input(placeholder="Enter the reference number "):
         # }           )
         prompt_text = prompt_template.format(input_refs=st.session_state.messages,format_instructions=output_parser.get_format_instructions())
         # response =pandas_df_agent.invoke
-        response = pandas_df_agent.run(prompt_text,callbacks=[st_cb])
+        response = pandas_df_agent.invoke(prompt_text,callbacks=[st_cb])
         print(response)
 
         try:
