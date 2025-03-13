@@ -195,7 +195,7 @@ if prompt := st.chat_input(placeholder="Enter the reference number "):
         )
         prompt_template = PromptTemplate( template="""user will inter a list of refrences in the input {input_refs} ,
         the user input will be maybe single string or a list of strings seprated by space or comma
-        for each input go and search ref_id and return the records matching 
+        for each input go and search column ref_id in the dataframe  and return the records matching 
         then generate reports_list:
         each item in this list will contain:
         -customers who purchased the item with the ref_id
