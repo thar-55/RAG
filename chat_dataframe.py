@@ -175,7 +175,7 @@ if prompt := st.chat_input(placeholder="Enter the reference number "):
         st.stop()
 
     llm = ChatOpenAI(
-        temperature=0, model="gpt-4o", openai_api_key=openai_api_key, streaming=True
+        temperature=0.2, model="gpt-4o", openai_api_key=openai_api_key, streaming=True
     )
 
     pandas_df_agent = create_pandas_dataframe_agent(
