@@ -46,12 +46,14 @@ class Customer(BaseModel):
 class Report_Structure(BaseModel):
     customer_list: List[Customer]
     item_title :str
+    ref_id:str
 
 
     def to_dict(self):
         return {
             'customer_list': [customer.to_dict() for customer in self.customer_list],
             'item_title': self.item_title,
+            'ref_id': self.ref_id,
 
      
 
@@ -196,7 +198,8 @@ if prompt := st.chat_input(placeholder="Enter the reference number "):
         then generate reports_list:
         each item in this list will contain:
         -customers who purchased the item with the ref_id
-        -item title .
+        -item title 
+        -ref_id
         
         for the customer data please return this data :
         -name 
@@ -209,7 +212,7 @@ if prompt := st.chat_input(placeholder="Enter the reference number "):
           
            If no relevant data is found, return: error
            {format_instructions}
-        reports_list":list of reports of each ref_id that contains the item title and customers who purchaed it  
+        reports_list":list of reports of each ref_id that contains the item title and red_id and customers who purchaed it  
         
         """,
         input_variables=["input_ref"],
