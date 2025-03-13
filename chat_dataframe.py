@@ -228,7 +228,7 @@ if prompt := st.chat_input(placeholder="Enter the reference number "):
         input_variables=["input_refs"],
         partial_variables={
             "format_instructions": output_parser.get_format_instructions()
-        }   
+        }   )
         
         # prompt_template = PromptTemplate( template="""user will enter a list of refrences in the input {input_refs} ,
         # the user input will be maybe single string or a list of strings seprated by space or comma
