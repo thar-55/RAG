@@ -204,7 +204,7 @@ if prompt := st.chat_input(placeholder="Enter the reference number "):
         
         For each reference provided, the following steps will be performed:
         
-        1.  search for the matching records in the pandas DataFrame.
+        1.  search in purchases history for the ref_id = {input_ref}.
         2. Return the matching records for each reference, which will include:
            - **Customers who purchased the item** with the corresponding `ref_id`.
            - **Item title**.
