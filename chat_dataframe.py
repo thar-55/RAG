@@ -8,7 +8,7 @@ from langchain_experimental.agents import create_pandas_dataframe_agent
 from langchain_community.callbacks.streamlit import StreamlitCallbackHandler
 # from langchain.chat_models import ChatOpenAI
 from langchain_openai import ChatOpenAI
-from langchain_openai import OpenAI
+# from langchain_openai import OpenAI
 import streamlit as st
 import pandas as pd
 import os
@@ -168,8 +168,8 @@ if prompt := st.chat_input(placeholder="Enter the reference number "):
         st.info("Please add your OpenAI API key to continue.")
         st.stop()
 
-    llm = OpenAI(
-        temperature=0, model="gpt", openai_api_key=openai_api_key, streaming=True
+    llm = ChatOpenAI(
+        temperature=0, model="gpt-3.5-turbo", openai_api_key=openai_api_key, streaming=True
     )
 
     pandas_df_agent = create_pandas_dataframe_agent(
