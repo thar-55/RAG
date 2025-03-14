@@ -210,40 +210,70 @@ if prompt := st.chat_input(placeholder="Enter the reference number "):
             pydantic_object=Refs_Reports
         )
         prompt_template = PromptTemplate(template="""
-        df = pd.read_csv('beta_dataset_v2.csv')
-        please split the string `{input_refs}` to a list seprated by spaces or commas or new line and name the list and name it refs_ids.
-        then for each string in refs_ids return the rows where  it matches column ref_id .
+        for each item in the list  `{input_refs}` return the customers and item title who have the same ref_id like this 
 
-        then group the results by ref_id in a list , in each item in the list it should contain the following:
+        reports_list :[
+        {ref_id:str,
+        item_title:str,
+        customer_list:List of cutomers 
+        
+        },
 
+        
+        ]
      
-           - **Customers who purchased the item** with the corresponding `ref_id`.
-           - **Item title**.
-           - **Reference ID** (`ref_id`).
-
-        For the customer data, please include the following information for each customer:
-        - **Name**
-        - **Phone number** (`customer_phone`)
-        - **Email address** (`customer_email`)
-        - **Purchase date**
-        - **Price paid**
-        - **Quantity purchased**
-
-        If no relevant data is found for any of the references, return the message: "error".
-
-        ### Format Instructions:
-        {format_instructions}
-
-        Finally, compile and return a **reports list**. This list will contain individual reports for each `ref_id`, which includes:
-        - **Item title**
-        - **Reference ID** (`ref_id`)
-        - **Customers who purchased the item**
-
+        # For the customer data, please include the following information for each customer:
+            # - **Name**
+            # - **Phone number** (`customer_phone`)
+            # - **Email address** (`customer_email`)
+            # - **Purchase date**
+            # - **Price paid**
+            # - **Quantity purchased**
+        
+        
+        {format_instructions}    
                     """,
                                          input_variables=["input_refs"],
                                          partial_variables={
                                              "format_instructions": output_parser.get_format_instructions()
                                          })
+
+
+        
+        # prompt_template = PromptTemplate(template="""
+        # please split the string `{input_refs}` to a list seprated by spaces or commas or new line and name the list and name it refs_ids.
+        # then for each string in refs_ids return the rows where  it matches column ref_id .
+
+        # then group the results by ref_id in a list , in each item in the list it should contain the following:
+
+     
+        #    - **Customers who purchased the item** with the corresponding `ref_id`.
+        #    - **Item title**.
+        #    - **Reference ID** (`ref_id`).
+
+        # For the customer data, please include the following information for each customer:
+        # - **Name**
+        # - **Phone number** (`customer_phone`)
+        # - **Email address** (`customer_email`)
+        # - **Purchase date**
+        # - **Price paid**
+        # - **Quantity purchased**
+
+        # If no relevant data is found for any of the references, return the message: "error".
+
+        # ### Format Instructions:
+        # {format_instructions}
+
+        # Finally, compile and return a **reports list**. This list will contain individual reports for each `ref_id`, which includes:
+        # - **Item title**
+        # - **Reference ID** (`ref_id`)
+        # - **Customers who purchased the item**
+
+        #             """,
+        #                                  input_variables=["input_refs"],
+        #                                  partial_variables={
+        #                                      "format_instructions": output_parser.get_format_instructions()
+        #                                  })
 
         # prompt_template = PromptTemplate( template="""user will enter a list of refrences in the input {input_refs} ,
         # the user input will be maybe single string or a list of strings seprated by space or comma
