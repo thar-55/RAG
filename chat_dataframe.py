@@ -199,7 +199,7 @@ if prompt := st.chat_input(placeholder="Enter the reference number "):
         )
         prompt_template = PromptTemplate( template="""user will enter a list of refrences in the input {input_refs} ,
         the user input will be maybe single string or a list of strings seprated by space or comma
-        for each input go and search user input in  ref_id 
+        search user input in  ref_id 
         each item in this list will contain:
         -customers who purchased the item with the ref_id
         -item title 
