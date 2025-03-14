@@ -213,8 +213,8 @@ if prompt := st.chat_input(placeholder="Enter the reference number "):
         for each  ( {input_refs} ) return the customers and item title who have the same ref_id like this 
 
         reports_list :[
-        ref_id:str,
-        item_title:str,
+        ref_id:refrence id,
+        item_title:Item title,
         customer_list:List of cutomers 
         
         },
