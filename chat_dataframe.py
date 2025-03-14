@@ -170,14 +170,14 @@ if prompt := st.chat_input(placeholder="Enter the reference number "):
         st.info("Please add your OpenAI API key to continue.")
         st.stop()
 
-    llm = ChatOpenAI(
-        temperature=0, model="gpt-4", openai_api_key=openai_api_key, streaming=False
-    )
-
-
-    # llm = OpenAI(
-    #    model_name="gpt-3.5-turbo-instruct",  temperature=0, openai_api_key=openai_api_key
+    # llm = ChatOpenAI(
+    #     temperature=0, model="gpt-4", openai_api_key=openai_api_key, streaming=False
     # )
+
+
+    llm = OpenAI(
+       model_name="gpt-3.5-turbo-instruct",  temperature=0, openai_api_key=openai_api_key
+    )
     pandas_df_agent = create_pandas_dataframe_agent(
     llm,
     df,
