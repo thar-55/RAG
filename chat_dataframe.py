@@ -273,7 +273,7 @@ if prompt := st.chat_input(placeholder="Enter the reference number "):
             st.write('phase 1')
             st.write(new_list)
             print("phase 1")
-            for i in  range(len(new_list))::
+            for i in  range(len(new_list)):
                 st.session_state["customers"] = new_list[i]['customer_list']
                 print("phase 2")
                 st.session_state.messages.append({"role": "assistant", "content": response})
