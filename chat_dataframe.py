@@ -22,7 +22,6 @@ from reportlab.lib.pagesizes import A4
 from reportlab.pdfgen import canvas
 import json
 
-df = pd.read_csv('beta_dataset_v2.csv')
 
 
 class Customer(BaseModel):
@@ -170,6 +169,9 @@ if prompt := st.chat_input(placeholder="Enter the reference number "):
         st.info("Please add your OpenAI API key to continue.")
         st.stop()
 
+    df = pd.read_csv('beta_dataset_v2.csv')
+
+
     llm = ChatOpenAI(
         temperature=0, model="gpt-4", openai_api_key=openai_api_key, streaming=False
     )
@@ -180,10 +182,11 @@ if prompt := st.chat_input(placeholder="Enter the reference number "):
     # )
     pandas_df_agent = create_pandas_dataframe_agent(
     llm,
-    df,
+    df=[df],
     verbose=True,
     allow_dangerous_code=True,
-    agent_type=AgentType.OPENAI_FUNCTIONS,
+    agent_type="tool-calling",
+
     )
    
 
