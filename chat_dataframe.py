@@ -282,7 +282,7 @@ if prompt := st.chat_input(placeholder="Enter the reference number "):
                 if len(new_list[i]['customer_list'])>0:
                     pdf_file = generate_pdf(new_list[i]['customer_list'])
                     with open(pdf_file, "rb") as f:
-                        st.download_button("Download PDF", f, file_name="customer_report.pdf", mime="application/pdf")
+                        st.download_button(str(i)+"Download PDF", f, file_name=str(i)+"customer_report.pdf", mime="application/pdf")
               
         except Exception as e:
             st.error("No data found.Please Try again."+str(e))
