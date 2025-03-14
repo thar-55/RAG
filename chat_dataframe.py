@@ -88,6 +88,9 @@ def generate_pdf(customers, filename="customer_report.pdf"):
         c.drawString(50, y, f"{i+1}. Name: {customer['name']}")
         c.drawString(50, y - 20, f"   Email: {customer['email']}")
         c.drawString(50, y - 40, f"   Phone: {customer['phone']}")
+        c.drawString(50, y - 40, f"   Date: {customer['date']}")
+        c.drawString(50, y - 40, f"   Quantity: {customer['quantity']}")
+        c.drawString(50, y - 40, f"   Price: {customer['price']}")
         y -= 70
         if y < 50:  # Add a new page if needed
             c.showPage()
