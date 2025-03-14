@@ -210,7 +210,7 @@ if prompt := st.chat_input(placeholder="Enter the reference number "):
             pydantic_object=Refs_Reports
         )
         prompt_template = PromptTemplate(template="""
-        for each item in the list  `{input_refs}` return the customers and item title who have the same ref_id like this 
+        for each item in the list  {input_refs} return the customers and item title who have the same ref_id like this 
 
         reports_list :[
         ref_id:str,
