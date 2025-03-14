@@ -198,7 +198,6 @@ if prompt := st.chat_input(placeholder="Enter the reference number "):
         pydantic_object=Refs_Reports
         )
         prompt_template = PromptTemplate( template="""user will enter a list of refrences in the input {input_refs} ,
-        the user input will be maybe single string or a list of strings seprated by space or comma
         search user input in  the data records in return a list  
         each item in this list will contain:
         -customers who purchased the item with the ref_id
