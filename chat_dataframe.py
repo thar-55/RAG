@@ -8,6 +8,7 @@ from langchain_experimental.agents import create_pandas_dataframe_agent
 from langchain_community.callbacks.streamlit import StreamlitCallbackHandler
 # from langchain.chat_models import ChatOpenAI
 from langchain_openai import ChatOpenAI
+from langchain_openai import OpenAI
 import streamlit as st
 import pandas as pd
 import os
@@ -18,6 +19,7 @@ from typing import List
 from reportlab.lib.pagesizes import A4
 from reportlab.pdfgen import canvas
 import json
+
 df = pd.read_csv('beta_dataset_v2.csv')
 
 
@@ -28,7 +30,6 @@ class Customer(BaseModel):
     price: str
     quantity: str
     date: str
-
 
     def to_dict(self):
         return {
@@ -42,14 +43,10 @@ class Customer(BaseModel):
         }
 
 
-
-
-
 class Report_Structure(BaseModel):
     customer_list: List[Customer]
-    item_title :str
-    ref_id:str
-
+    item_title: str
+    ref_id: str
 
     def to_dict(self):
         return {
@@ -57,35 +54,32 @@ class Report_Structure(BaseModel):
             'item_title': self.item_title,
             'ref_id': self.ref_id,
 
-     
-
         }
 
 
 class Refs_Reports(BaseModel):
     reports_list: List[Report_Structure]
 
-
     def to_dict(self):
         return {
             'reports_list': [report.to_dict() for report in self.reports_list],
-     
 
         }
+
 
 def generate_pdf(customers, filename="customer_report.pdf"):
     file_path = os.path.join("temp", filename)
     os.makedirs("temp", exist_ok=True)
-    
+
     c = canvas.Canvas(file_path, pagesize=A4)
     width, height = A4
     c.setFont("Helvetica", 12)
-    
+
     c.drawString(50, height - 50, "Customer Report")
     y = height - 80
-    
+
     for i, customer in enumerate(customers):
-        c.drawString(50, y, f"{i+1}. Name: {customer['name']}")
+        c.drawString(50, y, f"{i + 1}. Name: {customer['name']}")
         c.drawString(50, y - 20, f"   Email: {customer['email']}")
         c.drawString(50, y - 40, f"   Phone: {customer['phone']}")
         c.drawString(50, y - 60, f"   Date: {customer['date']}")
@@ -96,14 +90,9 @@ def generate_pdf(customers, filename="customer_report.pdf"):
             c.showPage()
             c.setFont("Helvetica", 12)
             y = height - 50
-    
+
     c.save()
     return file_path
-
-
-
-
-
 
 
 openai_api_key = st.secrets['OPENAI_API_KEY']
@@ -172,8 +161,6 @@ for msg in st.session_state.messages:
 if prompt := st.chat_input(placeholder="Enter the reference number "):
     df = pd.read_csv('beta_dataset_v2.csv')
 
-    
-
     st.session_state.messages.append({"role": "user", "content": prompt})
     st.chat_message("user").write(prompt)
 
@@ -181,38 +168,38 @@ if prompt := st.chat_input(placeholder="Enter the reference number "):
         st.info("Please add your OpenAI API key to continue.")
         st.stop()
 
-    llm = ChatOpenAI(
-        temperature=0, model="gpt-4o", openai_api_key=openai_api_key, streaming=True
+    llm = OpenAI(
+        temperature=0, model="gpt", openai_api_key=openai_api_key, streaming=True
     )
 
     pandas_df_agent = create_pandas_dataframe_agent(
         llm,
         df,
-        allow_dangerous_code=True ,
+        allow_dangerous_code=True,
         # verbose=True,
         agent_type="tool-calling",
         # handle_parsing_errors=True,
     )
-        # then return  a list of of each ref_id  item title and the list of customers  (name ,customer_phone ,customer_email,date,price , quantity )   thay purchased this item 
+    # then return  a list of of each ref_id  item title and the list of customers  (name ,customer_phone ,customer_email,date,price , quantity )   thay purchased this item
 
     with st.chat_message("assistant"):
         st_cb = StreamlitCallbackHandler(st.container(), expand_new_thoughts=False)
         output_parser = JsonOutputParser(
-        pydantic_object=Refs_Reports
+            pydantic_object=Refs_Reports
         )
-        prompt_template = PromptTemplate( template="""The user will provide a list of references in the input variable `{input_refs}`. This list could be:
+        prompt_template = PromptTemplate(template="""The user will provide a list of references in the input variable `{input_refs}`. This list could be:
 
         - A single reference string, or
         - A list of references separated by spaces or commas.
-        
+
         For each reference provided, the following steps will be performed:
-        
+
         1.  search in purchases history for the ref_id = {input_refs}.
         2. Return the matching records for each reference, which will include:
            - **Customers who purchased the item** with the corresponding `ref_id`.
            - **Item title**.
            - **Reference ID** (`ref_id`).
-        
+
         For the customer data, please include the following information for each customer:
         - **Name**
         - **Phone number** (`customer_phone`)
@@ -220,44 +207,43 @@ if prompt := st.chat_input(placeholder="Enter the reference number "):
         - **Purchase date**
         - **Price paid**
         - **Quantity purchased**
-        
+
         If no relevant data is found for any of the references, return the message: "error".
-        
+
         ### Format Instructions:
         {format_instructions}
-        
+
         Finally, compile and return a **reports list**. This list will contain individual reports for each `ref_id`, which includes:
         - **Item title**
         - **Reference ID** (`ref_id`)
         - **Customers who purchased the item**
 
                     """,
-        input_variables=["input_refs"],
-        partial_variables={
-            "format_instructions": output_parser.get_format_instructions()
-        }   )
-        
+                                         input_variables=["input_refs"],
+                                         partial_variables={
+                                             "format_instructions": output_parser.get_format_instructions()
+                                         })
+
         # prompt_template = PromptTemplate( template="""user will enter a list of refrences in the input {input_refs} ,
         # the user input will be maybe single string or a list of strings seprated by space or comma
-        # for each input go and search column ref_id in the dataframe  and return the records matching 
+        # for each input go and search column ref_id in the dataframe  and return the records matching
         # each item in this list will contain:
         # -customers who purchased the item with the ref_id
-        # -item title 
+        # -item title
         # -ref_id
-        
+
         # for the customer data please return this data :
-        # -name 
-        # -customer_phone 
+        # -name
+        # -customer_phone
         # -customer_email
         # -date
-        # -price 
-        # -quantity 
+        # -price
+        # -quantity
 
-          
         # If no relevant data is found, return: error
         # {format_instructions}
-        # reports_list":list of reports of each ref_id that contains the item title and red_id and customers who purchaed it  
-        
+        # reports_list":list of reports of each ref_id that contains the item title and red_id and customers who purchaed it
+
         # """,
         # input_variables=["input_refs"],
         # partial_variables={
@@ -265,29 +251,30 @@ if prompt := st.chat_input(placeholder="Enter the reference number "):
         # }           )
         prompt_text = prompt_template.format(input_refs=st.session_state.messages)
         # response =pandas_df_agent.invoke
-        response = pandas_df_agent.run(prompt_text,callbacks=[st_cb])
+        response = pandas_df_agent.run(prompt_text, callbacks=[st_cb])
         print(response)
 
         try:
-            
+
             st.write('phase 0')
             formatted_output = output_parser.parse(response)
-            new_list=formatted_output['reports_list']
+            new_list = formatted_output['reports_list']
             st.write('phase 1')
             st.write(new_list)
             print("phase 1")
-            for i in  range(len(new_list)):
+            for i in range(len(new_list)):
                 st.session_state["customers"] = new_list[i]['customer_list']
                 print("phase 2")
                 st.session_state.messages.append({"role": "assistant", "content": response})
                 st.write(response)
                 print("phase 3")
-                if len(new_list[i]['customer_list'])>0:
+                if len(new_list[i]['customer_list']) > 0:
                     pdf_file = generate_pdf(new_list[i]['customer_list'])
                     with open(pdf_file, "rb") as f:
-                        st.download_button(str(i)+"Download PDF", f, file_name=str(i)+"customer_report.pdf", mime="application/pdf")
-              
+                        st.download_button(str(i) + "Download PDF", f, file_name=str(i) + "customer_report.pdf",
+                                           mime="application/pdf")
+
         except Exception as e:
-            st.error("No data found.Please Try again."+str(e))
-        
-        
+            st.error("No data found.Please Try again." + str(e))
+
+
