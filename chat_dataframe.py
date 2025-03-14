@@ -2,6 +2,7 @@
 # from langchain.agents import create_pandas_dataframe_agent
 from langchain_experimental.agents import create_pandas_dataframe_agent
 # from langchain_experimental.agents.agent_toolkits import create_pandas_dataframe_agent
+from langchain.agents.agent_types import AgentType
 
 # langchain_experimental.agents.create_pandas_dataframe_agent
 # from langchain.callbacks import StreamlitCallbackHandler
@@ -168,26 +169,33 @@ if prompt := st.chat_input(placeholder="Enter the reference number "):
         st.info("Please add your OpenAI API key to continue.")
         st.stop()
 
-    # llm = ChatOpenAI(
-    #     temperature=0, model="gpt-4", openai_api_key=openai_api_key, streaming=False
+    llm = ChatOpenAI(
+        temperature=0, model="gpt-4", openai_api_key=openai_api_key, streaming=False
+    )
+
+
+    # llm = OpenAI(
+    #    model_name="gpt-3.5-turbo-instruct",  temperature=0, openai_api_key=openai_api_key
     # )
-
-
-    llm = OpenAI(
-       model_name="gpt-3.5-turbo-instruct",  temperature=0, openai_api_key=openai_api_key
+    pandas_df_agent = create_pandas_dataframe_agent(
+    llm,
+    df,
+    verbose=True,
+    agent_type=AgentType.OPENAI_FUNCTIONS,
     )
    
 
-    pandas_df_agent = create_pandas_dataframe_agent(
-        llm,
-        df=[df],
-        allow_dangerous_code=True,
-        verbose=True,
-        agent_type="tool-calling",
+    # pandas_df_agent = create_pandas_dataframe_agent(
+    #     llm,
+    #     df=[df],
+    #     allow_dangerous_code=True,
+    #     verbose=True,
+    #     agent_type="tool-calling",
 
-    # include_df_in_prompt=True,
-        # handle_parsing_errors=True,
-    )
+    # # include_df_in_prompt=True,
+    #     # handle_parsing_errors=True,
+    # )
+    # agent_executor = AgentExecutor(agent=agent, tools=tools)
     # then return  a list of of each ref_id  item title and the list of customers  (name ,customer_phone ,customer_email,date,price , quantity )   thay purchased this item
 
     with st.chat_message("assistant"):
