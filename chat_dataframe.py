@@ -182,6 +182,7 @@ if prompt := st.chat_input(placeholder="Enter the reference number "):
     llm,
     df,
     verbose=True,
+    allow_dangerous_code=True,
     agent_type=AgentType.OPENAI_FUNCTIONS,
     )
    
