@@ -1,7 +1,7 @@
 # from langchain_experimental.agents import AgentType
 # from langchain.agents import create_pandas_dataframe_agent
-# from langchain_experimental.agents import create_pandas_dataframe_agent
-from langchain_experimental.agents.agent_toolkits import create_pandas_dataframe_agent
+from langchain_experimental.agents import create_pandas_dataframe_agent
+# from langchain_experimental.agents.agent_toolkits import create_pandas_dataframe_agent
 
 # langchain_experimental.agents.create_pandas_dataframe_agent
 # from langchain.callbacks import StreamlitCallbackHandler
@@ -199,7 +199,7 @@ if prompt := st.chat_input(placeholder="Enter the reference number "):
         )
         prompt_template = PromptTemplate( template="""user will enter a list of refrences in the input {input_refs} ,
         the user input will be maybe single string or a list of strings seprated by space or comma
-        search user input in  ref_id 
+        search user input in  the data records in return a list  
         each item in this list will contain:
         -customers who purchased the item with the ref_id
         -item title 
