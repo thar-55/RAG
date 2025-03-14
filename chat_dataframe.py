@@ -8,12 +8,12 @@ from langchain_experimental.agents import create_pandas_dataframe_agent
 from langchain_community.callbacks.streamlit import StreamlitCallbackHandler
 # from langchain.chat_models import ChatOpenAI
 from langchain_openai import ChatOpenAI
-# from langchain_openai import OpenAI
+from langchain_openai import OpenAI
 import streamlit as st
 import pandas as pd
 import os
 from langchain_core.prompts import PromptTemplate
-from pydantic import BaseModel
+from pydantic import BaseModel,Field
 from langchain_core.output_parsers import JsonOutputParser
 from typing import List
 from reportlab.lib.pagesizes import A4
@@ -168,9 +168,15 @@ if prompt := st.chat_input(placeholder="Enter the reference number "):
         st.info("Please add your OpenAI API key to continue.")
         st.stop()
 
-    llm = ChatOpenAI(
-        temperature=0, model="gpt-4", openai_api_key=openai_api_key, streaming=False
+    # llm = ChatOpenAI(
+    #     temperature=0, model="gpt-4", openai_api_key=openai_api_key, streaming=False
+    # )
+
+
+    llm = OpenAI(
+       model_name="gpt-3.5-turbo-instruct",  temperature=0, openai_api_key=openai_api_key
     )
+   
 
     pandas_df_agent = create_pandas_dataframe_agent(
         llm,
@@ -185,6 +191,7 @@ if prompt := st.chat_input(placeholder="Enter the reference number "):
     # then return  a list of of each ref_id  item title and the list of customers  (name ,customer_phone ,customer_email,date,price , quantity )   thay purchased this item
 
     with st.chat_message("assistant"):
+        st.session_state["messages"] = [{"role": "assistant", "content": "How can I help you?"}]
         st_cb = StreamlitCallbackHandler(st.container(), expand_new_thoughts=False)
         output_parser = JsonOutputParser(
             pydantic_object=Refs_Reports
