@@ -210,14 +210,12 @@ if prompt := st.chat_input(placeholder="Enter the reference number "):
             pydantic_object=Refs_Reports
         )
         prompt_template = PromptTemplate(template="""
-        please split the input `{input_refs}` to a list seprated by spaces or commas or new line.
-        then return the rows that has the same ref_id like list items.
+        
+        please split the input `{input_refs}` to a list seprated by spaces or commas or new line and name the list 'user_input_list'.
+        then for each item in 'user_input_list' return the rows where  it matches 'ref_id' .
 
-        then group the results buy ref_id in a list , in each item in the list it should contain the following:
+        then group the results by ref_id in a list , in each item in the list it should contain the following:
 
-      
-
-        return a list for each ref_id like this  :
      
            - **Customers who purchased the item** with the corresponding `ref_id`.
            - **Item title**.
