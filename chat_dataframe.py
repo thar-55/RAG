@@ -211,8 +211,8 @@ if prompt := st.chat_input(placeholder="Enter the reference number "):
         )
         prompt_template = PromptTemplate(template="""
         
-        please split the input `{input_refs}` to a list seprated by spaces or commas or new line and name the list 'user_input_list'.
-        then for each item in 'user_input_list' return the rows where  it matches 'ref_id' .
+        please split the string `{input_refs}` to a list seprated by spaces or commas or new line and name the list and name it refs_ids.
+        then for each string in refs_ids return the rows where  it matches column ref_id .
 
         then group the results by ref_id in a list , in each item in the list it should contain the following:
 
