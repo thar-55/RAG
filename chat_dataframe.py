@@ -169,15 +169,17 @@ if prompt := st.chat_input(placeholder="Enter the reference number "):
         st.stop()
 
     llm = ChatOpenAI(
-        temperature=0, model="gpt-4", openai_api_key=openai_api_key, streaming=True
+        temperature=0, model="gpt-4", openai_api_key=openai_api_key, streaming=False
     )
 
     pandas_df_agent = create_pandas_dataframe_agent(
         llm,
-        [df],
+        df=[df],
         allow_dangerous_code=True,
         verbose=True,
         agent_type="tool-calling",
+
+    # include_df_in_prompt=True,
         # handle_parsing_errors=True,
     )
     # then return  a list of of each ref_id  item title and the list of customers  (name ,customer_phone ,customer_email,date,price , quantity )   thay purchased this item
@@ -187,7 +189,8 @@ if prompt := st.chat_input(placeholder="Enter the reference number "):
         output_parser = JsonOutputParser(
             pydantic_object=Refs_Reports
         )
-        prompt_template = PromptTemplate(template="""The user will provide a list of references in the input variable `{input_refs}`. This list could be:
+        prompt_template = PromptTemplate(template="""
+        The user will provide a list of references in the input variable `{input_refs}`. This list could be:
 
         - A single reference string, or
         - A list of references separated by spaces or commas.
