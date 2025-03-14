@@ -209,7 +209,9 @@ if prompt := st.chat_input(placeholder="Enter the reference number "):
         output_parser = JsonOutputParser(
             pydantic_object=Refs_Reports
         )
-        prompt_template = PromptTemplate(template="""for each  ( {input_refs} ) return the customers and item title who have the same ref_id like this 
+        prompt_template = PromptTemplate(template=""" return the customers and item title who have the same ref_id like any of this ( {input_refs} ) .
+
+        then format the data like this :
 
         reports_list :[
         ref_id:refrence id,
