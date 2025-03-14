@@ -210,7 +210,7 @@ if prompt := st.chat_input(placeholder="Enter the reference number "):
             pydantic_object=Refs_Reports
         )
         prompt_template = PromptTemplate(template="""
-        
+        df = pd.read_csv('beta_dataset_v2.csv')
         please split the string `{input_refs}` to a list seprated by spaces or commas or new line and name the list and name it refs_ids.
         then for each string in refs_ids return the rows where  it matches column ref_id .
 
