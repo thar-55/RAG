@@ -214,12 +214,12 @@ if prompt := st.chat_input(placeholder="Enter the reference number "):
         then format the data like this :
 
         reports_list :[
-        {
+        (
         ref_id:refrence id,
         item_title:Item title,
         customer_list:List of cutomers 
         
-        },
+        ),
 
         
         ]
