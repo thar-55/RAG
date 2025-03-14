@@ -207,10 +207,11 @@ if prompt := st.chat_input(placeholder="Enter the reference number "):
             pydantic_object=Refs_Reports
         )
         prompt_template = PromptTemplate(template="""
-        The user will provide a list of references in the input variable `{input_refs}`. This list could be:
+        what are the rows that there ref_id is equal to users input  `{input_refs}`
+        This list could be:
 
-        - A single reference string, or
-        - A list of references separated by spaces or commas.
+        - A single ref_id string, or
+        - A list of ref_id separated by spaces or commas or new line.
 
         For each reference provided, the following steps will be performed:
 
