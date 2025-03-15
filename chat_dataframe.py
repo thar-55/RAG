@@ -217,8 +217,8 @@ def generate_pdf(data, filename="customer_report.pdf"):
         c.drawString(170, y_position, "Email")
         c.drawString(350, y_position, "Phone")
         c.drawString(450, y_position, "Price")
-        c.drawString(480, y_position, "Quantity")
-        c.drawString(510, y_position, "Date")
+        c.drawString(500, y_position, "Quantity")
+        c.drawString(550, y_position, "Date")
         y_position -= 15
 
         # Loop through customer data
@@ -228,8 +228,8 @@ def generate_pdf(data, filename="customer_report.pdf"):
             c.drawString(170, y_position, customer['email'])
             c.drawString(350, y_position, customer['phone'])
             c.drawString(450, y_position, f"${customer['price']}")
-            c.drawString(480, y_position, f"{customer['quantity']}")
-            c.drawString(510, y_position, customer['date'])
+            c.drawString(500, y_position, f"{customer['quantity']}")
+            c.drawString(550, y_position, customer['date'])
             y_position -= 15
 
         y_position -= 20  # Space after each report section
