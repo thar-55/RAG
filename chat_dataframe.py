@@ -36,9 +36,13 @@ if "GOOGLE_API_KEY" not in os.environ:
 df = pd.read_csv('beta_dataset_v2.csv')
 
 
-def search_dataframe(user_input: str):
+def search_dataframe(user_input):
     """Searches DataFrame for matching ref_id values."""
+    if isinstance(user_input, list):  
+        user_input = ",".join(user_input)  # Convert list to a string
+
     search_terms = [term.strip() for term in user_input.replace('\n', ',').replace(' ', ',').split(',') if term]
+
     results = df[df['ref_id'].isin(search_terms)]
     
     report_dict = {}
