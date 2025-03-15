@@ -21,7 +21,13 @@ from typing import List
 from reportlab.lib.pagesizes import A4
 from reportlab.pdfgen import canvas
 import json
+from langchain_google_genai import ChatGoogleGenerativeAI
 
+
+
+
+if "GOOGLE_API_KEY" not in os.environ:
+    os.environ["GOOGLE_API_KEY"] =st.secrets['GOOGLE_API_KEY']
 
 
 class Customer(BaseModel):
@@ -171,10 +177,12 @@ if prompt := st.chat_input(placeholder="Enter the reference number "):
 
     df = pd.read_csv('beta_dataset_v2.csv')
 
+    llm = ChatGoogleGenerativeAI(model="gemini-pro")
 
-    llm = ChatOpenAI(
-        temperature=0, model="gpt-4", openai_api_key=openai_api_key, streaming=False
-    )
+
+    # llm = ChatOpenAI(
+    #     temperature=0, model="gpt-4", openai_api_key=openai_api_key, streaming=False
+    # )
 
 
     # llm = OpenAI(
