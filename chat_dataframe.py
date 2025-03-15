@@ -218,12 +218,12 @@ if prompt := st.chat_input(placeholder="Enter the reference number "):
             pydantic_object=Refs_Reports
         )
 
-        prompt_template = PromptTemplate(template=""" You are working with a Pandas DataFrame that contains customer purchase records. 
+        prompt_template = PromptTemplate(template=""" The data contains customer purchase records. 
 
         ### Task:
         1. **Search for records where the `ref_id` column matches any of these values:** ({input_refs}).
         2. **Extract and return the matching customer and item details.** 
-        3. **Ensure accuracy**: Only return data that exists in the DataFrame.
+        3. **Ensure accuracy**: Only return data that exists in the data.
         
         ### Expected Output Format:
         Return a structured JSON response as follows:
@@ -232,16 +232,16 @@ if prompt := st.chat_input(placeholder="Enter the reference number "):
         
           "reports_list": [
             
-              "ref_id": "<reference_id>",
+              "ref_id": "<ref_id>",
               "item_title": "<item_title>",
               "customer_list": [
                 
                   "name": "<customer_name>",
                   "phone_number": "<customer_phone>",
                   "email": "<customer_email>",
-                  "purchase_date": "<purchase_date>",
-                  "price_paid": "<price_paid>",
-                  "quantity_purchased": "<quantity_purchased>"
+                  "purchase_date": "<date>",
+                  "price_paid": "<price_>",
+                  "quantity_purchased": "<quantity>"
                 
               ]
             
