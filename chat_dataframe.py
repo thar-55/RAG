@@ -159,8 +159,8 @@ st.title("🦜 Generate your report with AI ")
 #             st.download_button("Download PDF", f, file_name="customer_report.pdf", mime="application/pdf")
 
 # openai_api_key = st.sidebar.text_input("OpenAI API Key", type="password")
-# if "messages" not in st.session_state or st.sidebar.button("Clear conversation history"):
-    # st.session_state["messages"] = [{"role": "assistant", "content": "How can I help you?"}]
+if "messages" not in st.session_state or st.sidebar.button("Clear conversation history"):
+    st.session_state["messages"] = [{"role": "assistant", "content": "How can I help you?"}]
 
 for msg in st.session_state.messages:
     st.chat_message(msg["role"]).write(msg["content"])
