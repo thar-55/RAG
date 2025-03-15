@@ -217,7 +217,7 @@ def generate_pdf(data, filename="customer_report.pdf"):
             # Customer data table header
             c.setFont("Helvetica-Bold", 10)
             c.drawString(30, y_position, "Name")
-            c.drawString(170, y_position, "Email")
+            c.drawString(185, y_position, "Email")
             c.drawString(350, y_position, "Phone")
             c.drawString(450, y_position, "Price")
             c.drawString(500, y_position, "Quantity")
@@ -258,7 +258,7 @@ def generate_pdf(data, filename="customer_report.pdf"):
                     #     # No need to split, just print the name
                     #     c.drawString(30, y_position, name)
                     c.drawString(30, y_position, customer['name'])
-                    c.drawString(170, y_position, customer['email'])
+                    c.drawString(185, y_position, customer['email'])
                     c.drawString(350, y_position, customer['phone'])
                     c.drawString(450, y_position, f"${customer['price']}")
                     c.drawString(500, y_position, f"{customer['quantity']}")
