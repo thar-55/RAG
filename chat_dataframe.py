@@ -190,7 +190,7 @@ def generate_pdf(data, filename="customer_report.pdf"):
     
     width, height = letter  # page size
 
-    y_position = height - 40  # initial y position
+    y_position = height - 70  # initial y position
 
     # Add Title
     c.setFont("Helvetica-Bold", 16)
@@ -228,7 +228,36 @@ def generate_pdf(data, filename="customer_report.pdf"):
             for customer in report['customer_list']:
                 try:
                     c.setFont("Helvetica", 10)
-                    c.drawString(30, y_position, customer['name'])
+                                        # Check if the name is too long and split it into two lines
+                    name = customer['name']
+                    name_width = c.stringWidth(name, "Helvetica", 10)
+
+                    max_name_width = 120  # Max width for name to fit in one line
+
+                    if name_width > max_name_width:
+                        # Split the name into two lines
+                        words = name.split()
+                        first_line = ''
+                        second_line = ''
+                        current_line = first_line
+
+                        # Try to fit as many words as possible in the first line
+                        for word in words:
+                            if c.stringWidth(current_line + ' ' + word if current_line else word, "Helvetica", 10) <= max_name_width:
+                                current_line += (' ' + word if current_line else word)
+                            else:
+                                second_line = word
+                                break
+
+                        # Move the y_position down for the second line if split
+                        y_position -= 15
+                        c.drawString(30, y_position, first_line)
+                        y_position -= 15
+                        c.drawString(30, y_position, second_line)
+                    else:
+                        # No need to split, just print the name
+                        c.drawString(30, y_position, name)
+                    # c.drawString(30, y_position, customer['name'])
                     c.drawString(170, y_position, customer['email'])
                     c.drawString(350, y_position, customer['phone'])
                     c.drawString(450, y_position, f"${customer['price']}")
@@ -243,7 +272,7 @@ def generate_pdf(data, filename="customer_report.pdf"):
     
             if y_position < 50:  # Check for page overflow
                 c.showPage()
-                y_position = height - 40  # Reset position
+                y_position = height - 70  # Reset position
                 
         except Exception as e:
             c.drawString(30, y_position,'error '+str(e))
