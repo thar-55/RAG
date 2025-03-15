@@ -122,10 +122,10 @@ def search_dataframe(user_input):
     return reports_list
 
 # Example Few-Shot Template
-# examples = [
-#     {"input": "000", "output": "[{ref_id: '000', item_title: 'Laptop', customers: [{name: 'John Doe', phone: '1234567890', price: '100',email: 'ttt@gmail.com',quantity:'5',date:'3/1/2021'}, {name: 'Bob White', phone: '4321098765', price: '300',email: 'ffffss@gmail.com',quantity:'6',date:'4/1/2023'}]}]"},
-#     {"input": "222", "output": "[{ref_id: '222', item_title: 'Tablet', customers: [{name: 'Alice Brown', phone: '5678901234', price: '150',email: 'ddaa@gmail.com',quantity:'7',date:'6/1/2025'}]}]"}
-# ]
+examples = [
+    {"input": "000", "output": "[{ref_id: '000', item_title: 'Laptop', customers: [{name: 'John Doe', phone: '1234567890', price: '100',email: 'ttt@gmail.com',quantity:'5',date:'3/1/2021'}, {name: 'Bob White', phone: '4321098765', price: '300',email: 'ffffss@gmail.com',quantity:'6',date:'4/1/2023'}]}]"},
+    {"input": "222", "output": "[{ref_id: '222', item_title: 'Tablet', customers: [{name: 'Alice Brown', phone: '5678901234', price: '150',email: 'ddaa@gmail.com',quantity:'7',date:'6/1/2025'}]}]"}
+]
 
 # examples = [
 #     {
