@@ -33,17 +33,6 @@ if "GOOGLE_API_KEY" not in os.environ:
     os.environ["GOOGLE_API_KEY"] =st.secrets['GOOGLE_API_KEY']
 
 
-class Refs_Reports(BaseModel):
-    reports_list: List[Report_Structure]
-
-    def to_dict(self):
-        return {
-            'reports_list': [report.to_dict() for report in self.reports_list],
-
-        }
-
-
-
 class Customer(BaseModel):
     name: str
     email: str
@@ -64,6 +53,10 @@ class Customer(BaseModel):
         }
 
 
+
+
+
+
 class Report_Structure(BaseModel):
     customer_list: List[Customer]
     item_title: str
@@ -76,6 +69,17 @@ class Report_Structure(BaseModel):
             'ref_id': self.ref_id,
 
         }
+
+
+class Refs_Reports(BaseModel):
+    reports_list: List[Report_Structure]
+
+    def to_dict(self):
+        return {
+            'reports_list': [report.to_dict() for report in self.reports_list],
+
+        }
+
 
 
 
