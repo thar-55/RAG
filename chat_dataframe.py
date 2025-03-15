@@ -26,6 +26,7 @@ from reportlab.pdfgen import canvas
 from reportlab.lib.pagesizes import letter
 import json
 from langchain_google_genai import ChatGoogleGenerativeAI
+from datetime import datetime
 
 
 
