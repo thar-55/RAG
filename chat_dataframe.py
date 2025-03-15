@@ -178,7 +178,9 @@ prompt_template = FewShotPromptTemplate(
 
 
 
-def generate_pdf(data):
+def generate_pdf(data, filename="customer_report.pdf"):
+    file_path = os.path.join("temp", filename)
+    os.makedirs("temp", exist_ok=True)
     filename = "output_report.pdf"
     c = canvas.Canvas(filename, pagesize=letter)
     
