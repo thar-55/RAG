@@ -122,10 +122,10 @@ def search_dataframe(user_input):
     return reports_list
 
 # Example Few-Shot Template
-examples = [
-    {"input": "000", "output": "[{ref_id: '000', item_title: 'Laptop', customers: [{name: 'John Doe', phone: '1234567890', price: '100',email: 'ttt@gmail.com',quantity:'5',date:'3/1/2021'}, {name: 'Bob White', phone: '4321098765', price: '300',email: 'ffffss@gmail.com',quantity:'6',date:'4/1/2023'}]}]"},
-    {"input": "222", "output": "[{ref_id: '222', item_title: 'Tablet', customers: [{name: 'Alice Brown', phone: '5678901234', price: '150',email: 'ddaa@gmail.com',quantity:'7',date:'6/1/2025'}]}]"}
-]
+# examples = [
+#     {"input": "000", "output": "[{ref_id: '000', item_title: 'Laptop', customers: [{name: 'John Doe', phone: '1234567890', price: '100',email: 'ttt@gmail.com',quantity:'5',date:'3/1/2021'}, {name: 'Bob White', phone: '4321098765', price: '300',email: 'ffffss@gmail.com',quantity:'6',date:'4/1/2023'}]}]"},
+#     {"input": "222", "output": "[{ref_id: '222', item_title: 'Tablet', customers: [{name: 'Alice Brown', phone: '5678901234', price: '150',email: 'ddaa@gmail.com',quantity:'7',date:'6/1/2025'}]}]"}
+# ]
 
 # examples = [
 #     {
@@ -159,8 +159,8 @@ output_parser = JsonOutputParser(
         )
 
 example_prompt = PromptTemplate(
-    input_variables=["input", "output"],
-    template="User Input: {input}\nOutput: {output}\n  {format_instructions}" ,
+    input_variables=["input"],
+    template=" {input}  {format_instructions}" ,
     partial_variables={
             "format_instructions": output_parser.get_format_instructions()
         } 
@@ -247,7 +247,7 @@ def format_response(user_input: str):
     st.write(reports)
     llm = ChatGoogleGenerativeAI(model="gemini-2.0-flash")
     # agent = initialize_agent(tools=[], agent=AgentType.ZERO_SHOT_REACT_DESCRIPTION, llm=llm)
-    formatted_output = llm.invoke(prompt_template.format(input=user_input,output=reports_summary))
+    formatted_output = llm.invoke(example_prompt.format(input=reports_summary))
     return formatted_output
 
 
