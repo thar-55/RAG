@@ -71,9 +71,14 @@ examples = [
     {"input": "222", "output": "[{ref_id: '222', item_title: 'Tablet', customers: [{name: 'Alice Brown', phone: '5678901234', price: '150',email: 'ddaa@gmail.com',quantity:'7',date:'6/1/2025'}]}]"}
 ]
 
+example_prompt = PromptTemplate(
+    input_variables=["input", "output"],
+    template="User Input: {input}\nOutput: {output}\n"
+)
+
 prompt_template = FewShotPromptTemplate(
     examples=examples,
-    example_prompt="User Input: {input}\nOutput: {output}\n",
+    example_prompt=example_prompt,
     suffix="User Input: {input}\nOutput:",
     input_variables=["input"]
 )
