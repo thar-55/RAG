@@ -30,6 +30,57 @@ if "GOOGLE_API_KEY" not in os.environ:
     os.environ["GOOGLE_API_KEY"] =st.secrets['GOOGLE_API_KEY']
 
 
+df = pd.read_csv('beta_dataset_v2.csv')
+
+
+def search_dataframe(user_input: str):
+    """Searches DataFrame for matching ref_id values."""
+    search_terms = [term.strip() for term in user_input.replace('\n', ',').replace(' ', ',').split(',') if term]
+    results = df[df['ref_id'].isin(search_terms)]
+    
+    report_dict = {}
+    for _, row in results.iterrows():
+        ref_id = row["ref_id"]
+        if ref_id not in report_dict:
+            report_dict[ref_id] = {"item_title": row["Item Title"], "customers": []}
+        report_dict[ref_id]["customers"].append({
+            "name": row["Name"],
+            "phone": row["customer_phone"],
+            "email": row["customer_email"],
+            "quantity": row["Quantity"],
+            "price": row["price"],
+            'date':row["Date"]
+        })
+    
+    reports_list = [
+        {
+            "ref_id": ref_id,
+            "item_title": details["item_title"],
+            "customers": details["customers"]
+        }
+        for ref_id, details in report_dict.items()
+    ]
+    return reports_list
+
+# Example Few-Shot Template
+examples = [
+    {"input": "000", "output": "[{ref_id: '000', item_title: 'Laptop', customers: [{name: 'John Doe', phone: '1234567890', price: '100',email: 'ttt@gmail.com',quantity:'5',date:'3/1/2021'}, {name: 'Bob White', phone: '4321098765', price: '300',email: 'ffffss@gmail.com',quantity:'6',date:'4/1/2023'}]}]"},
+    {"input": "222", "output": "[{ref_id: '222', item_title: 'Tablet', customers: [{name: 'Alice Brown', phone: '5678901234', price: '150',email: 'ddaa@gmail.com',quantity:'7',date:'6/1/2025'}]}]"}
+]
+
+prompt_template = FewShotPromptTemplate(
+    examples=examples,
+    example_prompt="User Input: {input}\nOutput: {output}\n",
+    suffix="User Input: {input}\nOutput:",
+    input_variables=["input"]
+)
+
+
+
+
+
+
+
 class Customer(BaseModel):
     name: str
     email: str
@@ -134,6 +185,16 @@ def load_data(uploaded_file):
         return None
 
 
+def format_response(user_input: str):
+    """Formats response using LLM."""
+    reports = search_dataframe(user_input)
+    llm = ChatGoogleGenerativeAI(model="gemini-2.0-flash")
+    agent = initialize_agent(tools=[], agent=AgentType.ZERO_SHOT_REACT_DESCRIPTION, llm=llm)
+    formatted_output = agent.run(prompt_template.format(input=user_input))
+    return formatted_output
+
+
+
 st.set_page_config(page_title="Customers report builder", page_icon="🦜")
 st.title("🦜 Generate your report with AI ")
 
@@ -175,9 +236,9 @@ if prompt := st.chat_input(placeholder="Enter the reference number "):
         st.info("Please add your OpenAI API key to continue.")
         st.stop()
 
-    df = pd.read_csv('beta_dataset_v2.csv')
+    
 
-    llm = ChatGoogleGenerativeAI(model="gemini-2.0-flash")
+    # llm = ChatGoogleGenerativeAI(model="gemini-2.0-flash")
 
 
     # llm = ChatOpenAI(
@@ -188,14 +249,14 @@ if prompt := st.chat_input(placeholder="Enter the reference number "):
     # llm = OpenAI(
     #    model_name="gpt-3.5-turbo-instruct",  temperature=0, openai_api_key=openai_api_key
     # )
-    pandas_df_agent = create_pandas_dataframe_agent(
-    llm,
-    df=[df],
-    verbose=True,
-    allow_dangerous_code=True,
-    agent_type="tool-calling",
+    # pandas_df_agent = create_pandas_dataframe_agent(
+    # llm,
+    # df=[df],
+    # verbose=True,
+    # allow_dangerous_code=True,
+    # agent_type="tool-calling",
 
-    )
+    # )
    
 
     # pandas_df_agent = create_pandas_dataframe_agent(
@@ -218,36 +279,36 @@ if prompt := st.chat_input(placeholder="Enter the reference number "):
             pydantic_object=Refs_Reports
         )
 
-        prompt_template = PromptTemplate( template="""using this variable `{input_refs}`.
-        1.  search in purchases history where the ref_id matches {input_refs}.
-        2. Return the matching records which will include:
-           - **Customers who purchased the item** with the corresponding `ref_id`.
-           - **Item title**.
-           - **Reference ID** (`ref_id`).
+        # prompt_template = PromptTemplate( template="""using this variable `{input_refs}`.
+        # 1.  search in purchases history where the ref_id matches {input_refs}.
+        # 2. Return the matching records which will include:
+        #    - **Customers who purchased the item** with the corresponding `ref_id`.
+        #    - **Item title**.
+        #    - **Reference ID** (`ref_id`).
         
-        For the customer data, please include the following information for each customer:
-        - **Name**
-        - **Phone number** (`customer_phone`)
-        - **Email address** (`customer_email`)
-        - **Purchase date**
-        - **Price paid**
-        - **Quantity purchased**
+        # For the customer data, please include the following information for each customer:
+        # - **Name**
+        # - **Phone number** (`customer_phone`)
+        # - **Email address** (`customer_email`)
+        # - **Purchase date**
+        # - **Price paid**
+        # - **Quantity purchased**
         
-        If no relevant data is found for any of the references, return the message: "error".
+        # If no relevant data is found for any of the references, return the message: "error".
         
-        ### Format Instructions:
-        {format_instructions}
+        # ### Format Instructions:
+        # {format_instructions}
         
-        Finally, compile and return a **reports list**. This list will contain individual reports for each `ref_id`, which includes:
-        - **Item title**
-        - **Reference ID** (`ref_id`)
-        - **Customers who purchased the item**
+        # Finally, compile and return a **reports list**. This list will contain individual reports for each `ref_id`, which includes:
+        # - **Item title**
+        # - **Reference ID** (`ref_id`)
+        # - **Customers who purchased the item**
 
-                    """,
-        input_variables=["input_refs"],
-        partial_variables={
-            "format_instructions": output_parser.get_format_instructions()
-        }   )
+        #             """,
+        # input_variables=["input_refs"],
+        # partial_variables={
+        #     "format_instructions": output_parser.get_format_instructions()
+        # }   )
         
         # prompt_template = PromptTemplate( template="""
         # search for records where ref_id={input_refs}
@@ -261,32 +322,35 @@ if prompt := st.chat_input(placeholder="Enter the reference number "):
         # partial_variables={
         #     "format_instructions": output_parser.get_format_instructions()
         # }           )
-        prompt_text = prompt_template.format(input_refs=st.session_state.messages)
+        # prompt_text = prompt_template.format(input_refs=st.session_state.messages)
         # response =pandas_df_agent.invoke
-        response = pandas_df_agent.run(prompt_text, callbacks=[st_cb])
+        # response = pandas_df_agent.run(prompt_text, callbacks=[st_cb])
+
+        response = format_response(st.session_state.messages)
         print(response)
+         st.write(response)
 
-        try:
+        # try:
 
-            st.write('phase 0')
-            formatted_output = output_parser.parse(response)
-            new_list = formatted_output['reports_list']
-            st.write('phase 1')
-            st.write(new_list)
-            print("phase 1")
-            for i in range(len(new_list)):
-                st.session_state["customers"] = new_list[i]['customer_list']
-                print("phase 2")
-                st.session_state.messages.append({"role": "assistant", "content": response})
-                st.write(response)
-                print("phase 3")
-                if len(new_list[i]['customer_list']) > 0:
-                    pdf_file = generate_pdf(new_list[i]['customer_list'])
-                    with open(pdf_file, "rb") as f:
-                        st.download_button(str(i) + "Download PDF", f, file_name=str(i) + "customer_report.pdf",
-                                           mime="application/pdf")
+        #     st.write('phase 0')
+        #     formatted_output = output_parser.parse(response)
+        #     new_list = formatted_output['reports_list']
+        #     st.write('phase 1')
+        #     st.write(new_list)
+        #     print("phase 1")
+        #     for i in range(len(new_list)):
+        #         st.session_state["customers"] = new_list[i]['customer_list']
+        #         print("phase 2")
+        #         st.session_state.messages.append({"role": "assistant", "content": response})
+        #         st.write(response)
+        #         print("phase 3")
+        #         if len(new_list[i]['customer_list']) > 0:
+        #             pdf_file = generate_pdf(new_list[i]['customer_list'])
+        #             with open(pdf_file, "rb") as f:
+        #                 st.download_button(str(i) + "Download PDF", f, file_name=str(i) + "customer_report.pdf",
+        #                                    mime="application/pdf")
 
-        except Exception as e:
-            st.error("No data found.Please Try again." + str(e))
+        # except Exception as e:
+        #     st.error("No data found.Please Try again." + str(e))
 
 
