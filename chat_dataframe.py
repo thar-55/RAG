@@ -200,7 +200,7 @@ def load_data(uploaded_file):
 def format_response(user_input: str):
     """Formats response using LLM."""
     reports = search_dataframe(user_input)
-    sr.write(reports)
+    st.write(reports)
     llm = ChatGoogleGenerativeAI(model="gemini-2.0-flash")
     # agent = initialize_agent(tools=[], agent=AgentType.ZERO_SHOT_REACT_DESCRIPTION, llm=llm)
     formatted_output = llm.invoke(prompt_template.format(input=reports))
