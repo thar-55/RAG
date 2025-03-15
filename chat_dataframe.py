@@ -177,7 +177,7 @@ if prompt := st.chat_input(placeholder="Enter the reference number "):
 
     df = pd.read_csv('beta_dataset_v2.csv')
 
-    llm = ChatGoogleGenerativeAI(model="gemini-pro-vision")
+    llm = ChatGoogleGenerativeAI(model="gemini-1.5-flash")
 
 
     # llm = ChatOpenAI(
