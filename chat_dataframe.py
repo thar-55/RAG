@@ -217,34 +217,72 @@ if prompt := st.chat_input(placeholder="Enter the reference number "):
         output_parser = JsonOutputParser(
             pydantic_object=Refs_Reports
         )
-        prompt_template = PromptTemplate(template=""" return the customers and item title who have the same ref_id like any of this ( {input_refs} ) .
 
-        then format the data like this :
+        prompt_template = PromptTemplate(template=""" You are working with a Pandas DataFrame that contains customer purchase records. 
 
-        reports_list :[
-        (
-        ref_id:refrence id,
-        item_title:Item title,
-        customer_list:List of cutomers 
+        ### Task:
+        1. **Search for records where the `ref_id` column matches any of these values:** ({input_refs}).
+        2. **Extract and return the matching customer and item details.** 
+        3. **Ensure accuracy**: Only return data that exists in the DataFrame.
         
-        ),
-
+        ### Expected Output Format:
+        Return a structured JSON response as follows:
         
-        ]
-     
-        # For the customer data, please include the following information for each customer:
-            # - **Name**
-            # - **Phone number** (`customer_phone`)
-            # - **Email address** (`customer_email`)
-            # - **Purchase date**
-            # - **Price paid**
-            # - **Quantity purchased**
-        
+        ```json
+        {
+          "reports_list": [
+            {
+              "ref_id": "<reference_id>",
+              "item_title": "<item_title>",
+              "customer_list": [
+                {
+                  "name": "<customer_name>",
+                  "phone_number": "<customer_phone>",
+                  "email": "<customer_email>",
+                  "purchase_date": "<purchase_date>",
+                  "price_paid": "<price_paid>",
+                  "quantity_purchased": "<quantity_purchased>"
+                }
+              ]
+            }
+          ]
+        }
+                
         
         {format_instructions}    
                     """,
         input_variables=["input_refs"],
         partial_variables={"format_instructions": output_parser.get_format_instructions()})
+
+
+        # prompt_template = PromptTemplate(template=""" return the customers and item title who have the same ref_id like any of this ( {input_refs} ) .
+
+        # then format the data like this :
+
+        # reports_list :[
+        # (
+        # ref_id:refrence id,
+        # item_title:Item title,
+        # customer_list:List of cutomers 
+        
+        # ),
+
+        
+        # ]
+     
+        # # For the customer data, please include the following information for each customer:
+        #     # - **Name**
+        #     # - **Phone number** (`customer_phone`)
+        #     # - **Email address** (`customer_email`)
+        #     # - **Purchase date**
+        #     # - **Price paid**
+        #     # - **Quantity purchased**
+        
+        
+        # {format_instructions}    
+        #             """,
+        # input_variables=["input_refs"],
+        # partial_variables={"format_instructions": output_parser.get_format_instructions()})
 
 
         
