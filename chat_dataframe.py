@@ -393,7 +393,7 @@ if prompt := st.chat_input(placeholder="Enter the reference number "):
         try:
 
             st.write('phase 0')
-            formatted_output = output_parser.parse(response)
+            formatted_output = output_parser.parse(response['content'])
             new_list = formatted_output['reports_list']
             st.write('phase 1')
             st.write(new_list)
