@@ -176,36 +176,99 @@ prompt_template = FewShotPromptTemplate(
 
 
 
+def generate_pdf(data):
+    filename = "output_report.pdf"
+    c = canvas.Canvas(filename, pagesize=letter)
+    
+    width, height = letter  # page size
 
+    y_position = height - 40  # initial y position
 
+    # Add Title
+    c.setFont("Helvetica-Bold", 16)
+    c.drawString(30, y_position, "Sales Report")
+    y_position -= 30
 
+    # Add Current Date
+    current_date = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    c.setFont("Helvetica", 10)
+    c.drawString(30, y_position, f"Date: {current_date}")
+    y_position -= 20
 
-def generate_pdf(customers, filename="customer_report.pdf"):
-    file_path = os.path.join("temp", filename)
-    os.makedirs("temp", exist_ok=True)
+    # Loop through the reports_list and customer data
+    for report in data:
+        # Add Report Information
+        c.setFont("Helvetica-Bold", 12)
+        c.drawString(30, y_position, f"Ref ID: {report['ref_id']}")
+        c.setFont("Helvetica", 10)
+        y_position -= 15
+        c.drawString(30, y_position, f"Item: {report['item_title']}")
+        y_position -= 25
 
-    c = canvas.Canvas(file_path, pagesize=A4)
-    width, height = A4
-    c.setFont("Helvetica", 12)
+        # Customer data table header
+        c.setFont("Helvetica-Bold", 10)
+        c.drawString(30, y_position, "Name")
+        c.drawString(200, y_position, "Email")
+        c.drawString(400, y_position, "Phone")
+        c.drawString(500, y_position, "Price")
+        c.drawString(600, y_position, "Quantity")
+        c.drawString(700, y_position, "Date")
+        y_position -= 15
 
-    c.drawString(50, height - 50, "Customer Report")
-    y = height - 80
+        # Loop through customer data
+        for customer in report['customer_list']:
+            c.setFont("Helvetica", 10)
+            c.drawString(30, y_position, customer['name'])
+            c.drawString(200, y_position, customer['email'])
+            c.drawString(400, y_position, customer['phone'])
+            c.drawString(500, y_position, f"${customer['price']}")
+            c.drawString(600, y_position, f"{customer['quantity']}")
+            c.drawString(700, y_position, customer['date'])
+            y_position -= 15
 
-    for i, customer in enumerate(customers):
-        c.drawString(50, y, f"{i + 1}. Name: {customer['name']}")
-        c.drawString(50, y - 20, f"   Email: {customer['email']}")
-        c.drawString(50, y - 40, f"   Phone: {customer['phone']}")
-        c.drawString(50, y - 60, f"   Date: {customer['date']}")
-        c.drawString(50, y - 80, f"   Quantity: {customer['quantity']}")
-        c.drawString(50, y - 100, f"   Price: {customer['price']}")
-        y -= 70
-        if y < 50:  # Add a new page if needed
+        y_position -= 20  # Space after each report section
+
+        if y_position < 50:  # Check for page overflow
             c.showPage()
-            c.setFont("Helvetica", 12)
-            y = height - 50
+            y_position = height - 40  # Reset position
 
+    # Save the PDF
     c.save()
     return file_path
+
+
+
+
+# def generate_pdf(customers, filename="customer_report.pdf"):
+#     file_path = os.path.join("temp", filename)
+#     os.makedirs("temp", exist_ok=True)
+
+#     c = canvas.Canvas(file_path, pagesize=A4)
+#     width, height = A4
+#     c.setFont("Helvetica", 12)
+
+#     c.drawString(50, height - 50, "Customer Report")
+#     y = height - 80
+
+#     for j in range(len(customers)):
+#          for i, customer in enumerate(customers[k]):
+#                 c.drawString(50, y, f"{i + 1}. Name: {customer['name']}")
+#                 c.drawString(50, y - 20, f"   Email: {customer['email']}")
+#                 c.drawString(50, y - 40, f"   Phone: {customer['phone']}")
+#                 c.drawString(50, y - 60, f"   Date: {customer['date']}")
+#                 c.drawString(50, y - 80, f"   Quantity: {customer['quantity']}")
+#                 c.drawString(50, y - 100, f"   Price: {customer['price']}")
+#                 y -= 70
+#                 if y < 50:  # Add a new page if needed
+#                     c.showPage()
+#                     c.setFont("Helvetica", 12)
+#                     y = height - 50
+                
+
+   
+
+#     c.save()
+#     return file_path
 
 
 openai_api_key = st.secrets['OPENAI_API_KEY']
@@ -387,28 +450,38 @@ if prompt := st.chat_input(placeholder="Enter the reference number "):
         st.write(last_message)
 
         response = format_response(last_message)
-        print(response)
-        st.write(response)
+
+        # pdf_file = generate_pdf(new_list[i]['customer_list'])
+        # with open(pdf_file, "rb") as f:
+        #         st.download_button(str(i) + "Download PDF", f, file_name=str(i) + "customer_report.pdf",
+        #                                    mime="application/pdf")
+        # print(response)
+        # st.write(response)
 
         try:
 
-            st.write('phase 0')
+            # st.write('phase 0')
             formatted_output = output_parser.parse(response)
             new_list = formatted_output['reports_list']
-            st.write('phase 1')
-            st.write(new_list)
-            print("phase 1")
-            for i in range(len(new_list)):
-                st.session_state["customers"] = new_list[i]['customer_list']
-                print("phase 2")
-                st.session_state.messages.append({"role": "assistant", "content": response})
-                st.write(response)
-                print("phase 3")
-                if len(new_list[i]['customer_list']) > 0:
-                    pdf_file = generate_pdf(new_list[i]['customer_list'])
-                    with open(pdf_file, "rb") as f:
-                        st.download_button(str(i) + "Download PDF", f, file_name=str(i) + "customer_report.pdf",
+
+            pdf_file = generate_pdf(new_list)
+            with open(pdf_file, "rb") as f:
+                st.download_button( "Download PDF", f, file_name="customer_report.pdf",
                                            mime="application/pdf")
+            # st.write('phase 1')
+            # st.write(new_list)
+            # print("phase 1")
+            # for i in range(len(new_list)):
+            #     st.session_state["customers"] = new_list[i]['customer_list']
+            #     print("phase 2")
+            #     st.session_state.messages.append({"role": "assistant", "content": response})
+            #     st.write(response)
+            #     print("phase 3")
+            #     if len(new_list[i]['customer_list']) > 0:
+            #         pdf_file = generate_pdf(new_list[i]['customer_list'])
+            #         with open(pdf_file, "rb") as f:
+            #             st.download_button(str(i) + "Download PDF", f, file_name=str(i) + "customer_report.pdf",
+            #                                mime="application/pdf")
 
         except Exception as e:
             st.error("No data found.Please Try again." + str(e))
