@@ -322,23 +322,11 @@ if prompt := st.chat_input(placeholder="Enter the reference number "):
         #                                  })
 
         prompt_template = PromptTemplate( template="""
-        return rows  where ref_id ={input_refs} .
-        each item in this row will contain:
-        -customers who purchased the item with the ref_id
-        -item title
-        -ref_id
-
-        for the customer data please return this data :
-        -name
-        -customer_phone
-        -customer_email
-        -date
-        -price
-        -quantity
-
+        search for records where ref_id={input_refs}
+       
         If no relevant data is found, return: error
         {format_instructions}
-        reports_list":list of reports of each ref_id that contains the item title and red_id and customers who purchaed it
+        reports_list":list of customers and item titles purchased item with ref_id={input_refs}
 
         """,
         input_variables=["input_refs"],
