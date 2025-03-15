@@ -229,24 +229,24 @@ if prompt := st.chat_input(placeholder="Enter the reference number "):
         Return a structured JSON response as follows:
         
         ```json
-        {
+        
           "reports_list": [
-            {
+            
               "ref_id": "<reference_id>",
               "item_title": "<item_title>",
               "customer_list": [
-                {
+                
                   "name": "<customer_name>",
                   "phone_number": "<customer_phone>",
                   "email": "<customer_email>",
                   "purchase_date": "<purchase_date>",
                   "price_paid": "<price_paid>",
                   "quantity_purchased": "<quantity_purchased>"
-                }
+                
               ]
-            }
+            
           ]
-        }
+        
                 
         
         {format_instructions}    
