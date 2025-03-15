@@ -181,7 +181,9 @@ prompt_template = FewShotPromptTemplate(
 
 
 def generate_pdf(data, filename="customer_report.pdf"):
-    file_path = os.path.join("temp", filename)
+
+    current_date = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    file_path = os.path.join("temp", str(current_date)+"_"+filename)
     os.makedirs("temp", exist_ok=True)
     # filename = filename
     c = canvas.Canvas(file_path, pagesize=letter)
@@ -196,7 +198,7 @@ def generate_pdf(data, filename="customer_report.pdf"):
     y_position -= 30
 
     # Add Current Date
-    current_date = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    
     c.setFont("Helvetica", 10)
     c.drawString(30, y_position, f"Date: {current_date}")
     y_position -= 20
