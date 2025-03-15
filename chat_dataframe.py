@@ -95,7 +95,7 @@ def search_dataframe(user_input):
         user_input = ",".join(user_input)  # Convert list to a string
 
     search_terms = [term.strip() for term in user_input.replace('\n', ',').replace(' ', ',').split(',') if term]
-    st.write(search_terms)
+    # st.write(search_terms)
 
     results = df[df['ref_id'].isin(search_terms)]
     
@@ -205,41 +205,48 @@ def generate_pdf(data, filename="customer_report.pdf"):
 
     # Loop through the reports_list and customer data
     for report in data:
+        try:
         # Add Report Information
-        c.setFont("Helvetica-Bold", 12)
-        c.drawString(30, y_position, f"Ref ID: {report['ref_id']}")
-        c.setFont("Helvetica", 10)
-        y_position -= 15
-        c.drawString(30, y_position, f"Item: {report['item_title']}")
-        y_position -= 25
-
-        # Customer data table header
-        c.setFont("Helvetica-Bold", 10)
-        c.drawString(30, y_position, "Name")
-        c.drawString(170, y_position, "Email")
-        c.drawString(350, y_position, "Phone")
-        c.drawString(450, y_position, "Price")
-        c.drawString(500, y_position, "Quantity")
-        c.drawString(550, y_position, "Date")
-        y_position -= 15
-
-        # Loop through customer data
-        for customer in report['customer_list']:
+            c.setFont("Helvetica-Bold", 12)
+            c.drawString(30, y_position, f"Ref ID: {report['ref_id']}")
             c.setFont("Helvetica", 10)
-            c.drawString(30, y_position, customer['name'])
-            c.drawString(170, y_position, customer['email'])
-            c.drawString(350, y_position, customer['phone'])
-            c.drawString(450, y_position, f"${customer['price']}")
-            c.drawString(500, y_position, f"{customer['quantity']}")
-            c.drawString(550, y_position, customer['date'])
             y_position -= 15
-
-        y_position -= 20  # Space after each report section
-
-        if y_position < 50:  # Check for page overflow
-            c.showPage()
-            y_position = height - 40  # Reset position
-
+            c.drawString(30, y_position, f"Item: {report['item_title']}")
+            y_position -= 25
+    
+            # Customer data table header
+            c.setFont("Helvetica-Bold", 10)
+            c.drawString(30, y_position, "Name")
+            c.drawString(170, y_position, "Email")
+            c.drawString(350, y_position, "Phone")
+            c.drawString(450, y_position, "Price")
+            c.drawString(500, y_position, "Quantity")
+            c.drawString(550, y_position, "Date")
+            y_position -= 15
+    
+            # Loop through customer data
+            for customer in report['customer_list']:
+                try:
+                    c.setFont("Helvetica", 10)
+                    c.drawString(30, y_position, customer['name'])
+                    c.drawString(170, y_position, customer['email'])
+                    c.drawString(350, y_position, customer['phone'])
+                    c.drawString(450, y_position, f"${customer['price']}")
+                    c.drawString(500, y_position, f"{customer['quantity']}")
+                    c.drawString(550, y_position, customer['date'])
+                    y_position -= 15
+                    
+                except Exception as e:
+                    c.drawString(30, y_position, 'error '+str(e))
+    
+            y_position -= 20  # Space after each report section
+    
+            if y_position < 50:  # Check for page overflow
+                c.showPage()
+                y_position = height - 40  # Reset position
+                
+        except Exception as e:
+            c.drawString(30, y_position,'error '+str(e))
     # Save the PDF
     c.save()
     return file_path
