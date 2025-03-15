@@ -42,6 +42,7 @@ def search_dataframe(user_input):
         user_input = ",".join(user_input)  # Convert list to a string
 
     search_terms = [term.strip() for term in user_input.replace('\n', ',').replace(' ', ',').split(',') if term]
+    st.write(search_terms)
 
     results = df[df['ref_id'].isin(search_terms)]
     
