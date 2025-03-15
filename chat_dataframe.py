@@ -322,8 +322,8 @@ if prompt := st.chat_input(placeholder="Enter the reference number "):
         #                                  })
 
         prompt_template = PromptTemplate( template="""
-        return list  where ref_id ={input_refs} .
-        each item in this list will contain:
+        return rows  where ref_id ={input_refs} .
+        each item in this row will contain:
         -customers who purchased the item with the ref_id
         -item title
         -ref_id
