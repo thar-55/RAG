@@ -315,7 +315,7 @@ def format_response(user_input: str):
     """Formats response using LLM."""
     reports = search_dataframe(user_input)
     reports_summary = str(reports)
-    st.write(reports)
+    # st.write(reports)
     llm = ChatGoogleGenerativeAI(model="gemini-2.0-flash")
     # agent = initialize_agent(tools=[], agent=AgentType.ZERO_SHOT_REACT_DESCRIPTION, llm=llm)
     formatted_output = llm.invoke(example_prompt.format(input=reports_summary))
@@ -455,7 +455,7 @@ if prompt := st.chat_input(placeholder="Enter the reference number "):
         # response = pandas_df_agent.run(prompt_text, callbacks=[st_cb])
         last_message = st.session_state.messages[-1]["content"]
 
-        st.write(last_message)
+        # st.write(last_message)
 
         response = format_response(last_message)
 
