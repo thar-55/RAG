@@ -218,41 +218,41 @@ if prompt := st.chat_input(placeholder="Enter the reference number "):
             pydantic_object=Refs_Reports
         )
 
-        prompt_template = PromptTemplate(template=""" The data contains customer purchase records. 
+        # prompt_template = PromptTemplate(template=""" The data contains customer purchase records. 
 
-        ### Task:
-        1. **Search for records where the `ref_id` column matches any of these values:** ({input_refs}).
-        2. **Extract and return the matching customer and item details.** 
-        3. **Ensure accuracy**: Only return data that exists in the data.
+        # ### Task:
+        # 1. **Search for records where the `ref_id` column matches any of these values:** ({input_refs}).
+        # 2. **Extract and return the matching customer and item details.** 
+        # 3. **Ensure accuracy**: Only return data that exists in the data.
         
-        ### Expected Output Format:
-        Return a structured JSON response as follows:
+        # ### Expected Output Format:
+        # Return a structured JSON response as follows:
         
-        ```json
+        # ```json
         
-          "reports_list": [
+        #   "reports_list": [
             
-              "ref_id": "<ref_id>",
-              "item_title": "<item_title>",
-              "customer_list": [
+        #       "ref_id": "<ref_id>",
+        #       "item_title": "<item_title>",
+        #       "customer_list": [
                 
-                  "name": "<customer_name>",
-                  "phone_number": "<customer_phone>",
-                  "email": "<customer_email>",
-                  "purchase_date": "<date>",
-                  "price_paid": "<price_>",
-                  "quantity_purchased": "<quantity>"
+        #           "name": "<customer_name>",
+        #           "phone_number": "<customer_phone>",
+        #           "email": "<customer_email>",
+        #           "purchase_date": "<date>",
+        #           "price_paid": "<price_>",
+        #           "quantity_purchased": "<quantity>"
                 
-              ]
+        #       ]
             
-          ]
+        #   ]
         
                 
         
-        {format_instructions}    
-                    """,
-        input_variables=["input_refs"],
-        partial_variables={"format_instructions": output_parser.get_format_instructions()})
+        # {format_instructions}    
+        #             """,
+        # input_variables=["input_refs"],
+        # partial_variables={"format_instructions": output_parser.get_format_instructions()})
 
 
         # prompt_template = PromptTemplate(template=""" return the customers and item title who have the same ref_id like any of this ( {input_refs} ) .
@@ -321,31 +321,31 @@ if prompt := st.chat_input(placeholder="Enter the reference number "):
         #                                      "format_instructions": output_parser.get_format_instructions()
         #                                  })
 
-        # prompt_template = PromptTemplate( template="""user will enter a list of refrences in the input {input_refs} ,
-        # the user input will be maybe single string or a list of strings seprated by space or comma
-        # for each input go and search column ref_id in the dataframe  and return the records matching
-        # each item in this list will contain:
-        # -customers who purchased the item with the ref_id
-        # -item title
-        # -ref_id
+        prompt_template = PromptTemplate( template="""user will enter a list of refrences in the input {input_refs} ,
+        the user input will be maybe single string or a list of strings seprated by space or comma
+        for each input go and search column ref_id in the dataframe  and return the records matching
+        each item in this list will contain:
+        -customers who purchased the item with the ref_id
+        -item title
+        -ref_id
 
-        # for the customer data please return this data :
-        # -name
-        # -customer_phone
-        # -customer_email
-        # -date
-        # -price
-        # -quantity
+        for the customer data please return this data :
+        -name
+        -customer_phone
+        -customer_email
+        -date
+        -price
+        -quantity
 
-        # If no relevant data is found, return: error
-        # {format_instructions}
-        # reports_list":list of reports of each ref_id that contains the item title and red_id and customers who purchaed it
+        If no relevant data is found, return: error
+        {format_instructions}
+        reports_list":list of reports of each ref_id that contains the item title and red_id and customers who purchaed it
 
-        # """,
-        # input_variables=["input_refs"],
-        # partial_variables={
-        #     "format_instructions": output_parser.get_format_instructions()
-        # }           )
+        """,
+        input_variables=["input_refs"],
+        partial_variables={
+            "format_instructions": output_parser.get_format_instructions()
+        }           )
         prompt_text = prompt_template.format(input_refs=st.session_state.messages)
         # response =pandas_df_agent.invoke
         response = pandas_df_agent.run(prompt_text, callbacks=[st_cb])
