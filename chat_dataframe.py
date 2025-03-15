@@ -218,121 +218,55 @@ if prompt := st.chat_input(placeholder="Enter the reference number "):
             pydantic_object=Refs_Reports
         )
 
-        # prompt_template = PromptTemplate(template=""" The data contains customer purchase records. 
+        prompt_template = PromptTemplate( template="""The user will provide a list of references in the input variable `{input_refs}`. This list could be:
 
-        # ### Task:
-        # 1. **Search for records where the `ref_id` column matches any of these values:** ({input_refs}).
-        # 2. **Extract and return the matching customer and item details.** 
-        # 3. **Ensure accuracy**: Only return data that exists in the data.
+        - A single reference string, or
+        - A list of references separated by spaces or commas.
         
-        # ### Expected Output Format:
-        # Return a structured JSON response as follows:
+        For each reference provided, the following steps will be performed:
         
-        # ```json
+        1.  search in purchases history for the ref_id = {input_refs}.
+        2. Return the matching records for each reference, which will include:
+           - **Customers who purchased the item** with the corresponding `ref_id`.
+           - **Item title**.
+           - **Reference ID** (`ref_id`).
         
-        #   "reports_list": [
-            
-        #       "ref_id": "<ref_id>",
-        #       "item_title": "<item_title>",
-        #       "customer_list": [
-                
-        #           "name": "<customer_name>",
-        #           "phone_number": "<customer_phone>",
-        #           "email": "<customer_email>",
-        #           "purchase_date": "<date>",
-        #           "price_paid": "<price_>",
-        #           "quantity_purchased": "<quantity>"
-                
-        #       ]
-            
-        #   ]
+        For the customer data, please include the following information for each customer:
+        - **Name**
+        - **Phone number** (`customer_phone`)
+        - **Email address** (`customer_email`)
+        - **Purchase date**
+        - **Price paid**
+        - **Quantity purchased**
         
-                
+        If no relevant data is found for any of the references, return the message: "error".
         
-        # {format_instructions}    
-        #             """,
-        # input_variables=["input_refs"],
-        # partial_variables={"format_instructions": output_parser.get_format_instructions()})
-
-
-        # prompt_template = PromptTemplate(template=""" return the customers and item title who have the same ref_id like any of this ( {input_refs} ) .
-
-        # then format the data like this :
-
-        # reports_list :[
-        # (
-        # ref_id:refrence id,
-        # item_title:Item title,
-        # customer_list:List of cutomers 
-        
-        # ),
-
-        
-        # ]
-     
-        # # For the customer data, please include the following information for each customer:
-        #     # - **Name**
-        #     # - **Phone number** (`customer_phone`)
-        #     # - **Email address** (`customer_email`)
-        #     # - **Purchase date**
-        #     # - **Price paid**
-        #     # - **Quantity purchased**
-        
-        
-        # {format_instructions}    
-        #             """,
-        # input_variables=["input_refs"],
-        # partial_variables={"format_instructions": output_parser.get_format_instructions()})
-
-
-        
-        # prompt_template = PromptTemplate(template="""
-        # please split the string `{input_refs}` to a list seprated by spaces or commas or new line and name the list and name it refs_ids.
-        # then for each string in refs_ids return the rows where  it matches column ref_id .
-
-        # then group the results by ref_id in a list , in each item in the list it should contain the following:
-
-     
-        #    - **Customers who purchased the item** with the corresponding `ref_id`.
-        #    - **Item title**.
-        #    - **Reference ID** (`ref_id`).
-
-        # For the customer data, please include the following information for each customer:
-        # - **Name**
-        # - **Phone number** (`customer_phone`)
-        # - **Email address** (`customer_email`)
-        # - **Purchase date**
-        # - **Price paid**
-        # - **Quantity purchased**
-
-        # If no relevant data is found for any of the references, return the message: "error".
-
-        # ### Format Instructions:
-        # {format_instructions}
-
-        # Finally, compile and return a **reports list**. This list will contain individual reports for each `ref_id`, which includes:
-        # - **Item title**
-        # - **Reference ID** (`ref_id`)
-        # - **Customers who purchased the item**
-
-        #             """,
-        #                                  input_variables=["input_refs"],
-        #                                  partial_variables={
-        #                                      "format_instructions": output_parser.get_format_instructions()
-        #                                  })
-
-        prompt_template = PromptTemplate( template="""
-        search for records where ref_id={input_refs}
-       
-        If no relevant data is found, return: error
+        ### Format Instructions:
         {format_instructions}
-        reports_list":list of customers and item titles purchased item with ref_id={input_refs}
+        
+        Finally, compile and return a **reports list**. This list will contain individual reports for each `ref_id`, which includes:
+        - **Item title**
+        - **Reference ID** (`ref_id`)
+        - **Customers who purchased the item**
 
-        """,
+                    """,
         input_variables=["input_refs"],
         partial_variables={
             "format_instructions": output_parser.get_format_instructions()
-        }           )
+        }   )
+        
+        # prompt_template = PromptTemplate( template="""
+        # search for records where ref_id={input_refs}
+       
+        # If no relevant data is found, return: error
+        # {format_instructions}
+        # reports_list":list of customers and item titles purchased item with ref_id={input_refs}
+
+        # """,
+        # input_variables=["input_refs"],
+        # partial_variables={
+        #     "format_instructions": output_parser.get_format_instructions()
+        # }           )
         prompt_text = prompt_template.format(input_refs=st.session_state.messages)
         # response =pandas_df_agent.invoke
         response = pandas_df_agent.run(prompt_text, callbacks=[st_cb])
