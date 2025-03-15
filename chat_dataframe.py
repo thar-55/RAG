@@ -162,7 +162,9 @@ output_parser = JsonOutputParser(
 
 example_prompt = PromptTemplate(
     input_variables=["input"],
-    template="  remove the duplicated names and keep the priorty for names that has contact informations in  this list {input}  {format_instructions}" ,
+    # template="  remove the duplicated names and keep the priorty for names that has contact informations in  this list {input}  {format_instructions}" ,
+    template="  User Input: {input}  {format_instructions}" ,
+
     partial_variables={
             "format_instructions": output_parser.get_format_instructions()
         } 
