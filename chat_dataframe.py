@@ -248,7 +248,7 @@ def format_response(user_input: str):
     llm = ChatGoogleGenerativeAI(model="gemini-2.0-flash")
     # agent = initialize_agent(tools=[], agent=AgentType.ZERO_SHOT_REACT_DESCRIPTION, llm=llm)
     formatted_output = llm.invoke(example_prompt.format(input=reports_summary))
-    return formatted_output
+    return formatted_output.text
 
 
 
@@ -393,7 +393,7 @@ if prompt := st.chat_input(placeholder="Enter the reference number "):
         try:
 
             st.write('phase 0')
-            formatted_output = output_parser.parse(response['content'])
+            formatted_output = output_parser.parse(response)
             new_list = formatted_output['reports_list']
             st.write('phase 1')
             st.write(new_list)
