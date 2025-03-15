@@ -328,7 +328,7 @@ if prompt := st.chat_input(placeholder="Enter the reference number "):
 
         response = format_response(st.session_state.messages)
         print(response)
-         st.write(response)
+        st.write(response)
 
         # try:
 
