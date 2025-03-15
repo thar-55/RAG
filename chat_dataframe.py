@@ -202,7 +202,7 @@ def format_response(user_input: str):
     reports = search_dataframe(user_input)
     llm = ChatGoogleGenerativeAI(model="gemini-2.0-flash")
     # agent = initialize_agent(tools=[], agent=AgentType.ZERO_SHOT_REACT_DESCRIPTION, llm=llm)
-    formatted_output = llm.run(prompt_template.format(input=user_input))
+    formatted_output = llm.invoke(prompt_template.format(input=user_input))
     return formatted_output
 
 
