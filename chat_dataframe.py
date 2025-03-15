@@ -33,6 +33,53 @@ if "GOOGLE_API_KEY" not in os.environ:
     os.environ["GOOGLE_API_KEY"] =st.secrets['GOOGLE_API_KEY']
 
 
+class Refs_Reports(BaseModel):
+    reports_list: List[Report_Structure]
+
+    def to_dict(self):
+        return {
+            'reports_list': [report.to_dict() for report in self.reports_list],
+
+        }
+
+
+
+class Customer(BaseModel):
+    name: str
+    email: str
+    phone: str
+    price: str
+    quantity: str
+    date: str
+
+    def to_dict(self):
+        return {
+            'name': self.name,
+            'email': self.email,
+            'phone': self.phone,
+            'price': self.price,
+            'quantity': self.quantity,
+            'date': self.date,
+
+        }
+
+
+class Report_Structure(BaseModel):
+    customer_list: List[Customer]
+    item_title: str
+    ref_id: str
+
+    def to_dict(self):
+        return {
+            'customer_list': [customer.to_dict() for customer in self.customer_list],
+            'item_title': self.item_title,
+            'ref_id': self.ref_id,
+
+        }
+
+
+
+
 df = pd.read_csv('beta_dataset_v2.csv')
 
 
@@ -75,10 +122,16 @@ examples = [
     {"input": "000", "output": "[{ref_id: '000', item_title: 'Laptop', customers: [{name: 'John Doe', phone: '1234567890', price: '100',email: 'ttt@gmail.com',quantity:'5',date:'3/1/2021'}, {name: 'Bob White', phone: '4321098765', price: '300',email: 'ffffss@gmail.com',quantity:'6',date:'4/1/2023'}]}]"},
     {"input": "222", "output": "[{ref_id: '222', item_title: 'Tablet', customers: [{name: 'Alice Brown', phone: '5678901234', price: '150',email: 'ddaa@gmail.com',quantity:'7',date:'6/1/2025'}]}]"}
 ]
+output_parser = JsonOutputParser(
+            pydantic_object=Refs_Reports
+        )
 
 example_prompt = PromptTemplate(
     input_variables=["input", "output"],
-    template="User Input: {input}\nOutput: {output}\n"
+    template="User Input: {input}\nOutput: {output}\n" ,
+    partial_variables={
+            "format_instructions": output_parser.get_format_instructions()
+        } 
 )
 
 prompt_template = FewShotPromptTemplate(
@@ -93,49 +146,6 @@ prompt_template = FewShotPromptTemplate(
 
 
 
-
-class Customer(BaseModel):
-    name: str
-    email: str
-    phone: str
-    price: str
-    quantity: str
-    date: str
-
-    def to_dict(self):
-        return {
-            'name': self.name,
-            'email': self.email,
-            'phone': self.phone,
-            'price': self.price,
-            'quantity': self.quantity,
-            'date': self.date,
-
-        }
-
-
-class Report_Structure(BaseModel):
-    customer_list: List[Customer]
-    item_title: str
-    ref_id: str
-
-    def to_dict(self):
-        return {
-            'customer_list': [customer.to_dict() for customer in self.customer_list],
-            'item_title': self.item_title,
-            'ref_id': self.ref_id,
-
-        }
-
-
-class Refs_Reports(BaseModel):
-    reports_list: List[Report_Structure]
-
-    def to_dict(self):
-        return {
-            'reports_list': [report.to_dict() for report in self.reports_list],
-
-        }
 
 
 def generate_pdf(customers, filename="customer_report.pdf"):
@@ -347,27 +357,27 @@ if prompt := st.chat_input(placeholder="Enter the reference number "):
         print(response)
         st.write(response)
 
-        # try:
+        try:
 
-        #     st.write('phase 0')
-        #     formatted_output = output_parser.parse(response)
-        #     new_list = formatted_output['reports_list']
-        #     st.write('phase 1')
-        #     st.write(new_list)
-        #     print("phase 1")
-        #     for i in range(len(new_list)):
-        #         st.session_state["customers"] = new_list[i]['customer_list']
-        #         print("phase 2")
-        #         st.session_state.messages.append({"role": "assistant", "content": response})
-        #         st.write(response)
-        #         print("phase 3")
-        #         if len(new_list[i]['customer_list']) > 0:
-        #             pdf_file = generate_pdf(new_list[i]['customer_list'])
-        #             with open(pdf_file, "rb") as f:
-        #                 st.download_button(str(i) + "Download PDF", f, file_name=str(i) + "customer_report.pdf",
-        #                                    mime="application/pdf")
+            st.write('phase 0')
+            formatted_output = output_parser.parse(response)
+            new_list = formatted_output['reports_list']
+            st.write('phase 1')
+            st.write(new_list)
+            print("phase 1")
+            for i in range(len(new_list)):
+                st.session_state["customers"] = new_list[i]['customer_list']
+                print("phase 2")
+                st.session_state.messages.append({"role": "assistant", "content": response})
+                st.write(response)
+                print("phase 3")
+                if len(new_list[i]['customer_list']) > 0:
+                    pdf_file = generate_pdf(new_list[i]['customer_list'])
+                    with open(pdf_file, "rb") as f:
+                        st.download_button(str(i) + "Download PDF", f, file_name=str(i) + "customer_report.pdf",
+                                           mime="application/pdf")
 
-        # except Exception as e:
-        #     st.error("No data found.Please Try again." + str(e))
+        except Exception as e:
+            st.error("No data found.Please Try again." + str(e))
 
 
