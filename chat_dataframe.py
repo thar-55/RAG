@@ -218,15 +218,9 @@ if prompt := st.chat_input(placeholder="Enter the reference number "):
             pydantic_object=Refs_Reports
         )
 
-        prompt_template = PromptTemplate( template="""The user will provide a list of references in the input variable `{input_refs}`. This list could be:
-
-        - A single reference string, or
-        - A list of references separated by spaces or commas.
-        
-        For each reference provided, the following steps will be performed:
-        
-        1.  search in purchases history for the ref_id = {input_refs}.
-        2. Return the matching records for each reference, which will include:
+        prompt_template = PromptTemplate( template="""using this variable `{input_refs}`.
+        1.  search in purchases history where the ref_id matches {input_refs}.
+        2. Return the matching records which will include:
            - **Customers who purchased the item** with the corresponding `ref_id`.
            - **Item title**.
            - **Reference ID** (`ref_id`).
